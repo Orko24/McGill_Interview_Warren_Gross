@@ -1,0 +1,86 @@
+% ============================================================================
+% METHODS
+% ============================================================================
+\section{Methods}
+\label{sec:methods}
+
+\subsection{Quantization Techniques}
+
+We employ BitsAndBytes \cite{dettmers2022llmint8} for post-training quantization, which applies quantization during model loading without requiring calibration data.
+
+\subsubsection{4-bit Quantization Formats}
+
+Two 4-bit formats are compared:
+
+\textbf{NF4 (Normal Float 4-bit):} Optimized for normally-distributed neural network weights. The 16 quantization levels are non-uniformly distributed, with higher density near zero where weights concentrate:
+\begin{equation}
+    q_{\text{NF4}} = \text{argmin}_{q \in Q_{\text{NF4}}} |w - q|
+\end{equation}
+where $Q_{\text{NF4}}$ contains levels optimized for $\mathcal{N}(0, \sigma^2)$.
+
+\textbf{FP4 (4-bit Floating Point):} Standard floating-point representation with uniformly-spaced levels, treating all value ranges equally.
+
+\subsubsection{Double Quantization}
+
+Double quantization compresses the quantization scales themselves. For each group of weights, we store:
+\begin{itemize}
+    \item 4-bit quantized weights
+    \item 8-bit quantized scales (instead of FP32)
+    \item FP32 ``scale of scales'' (shared across many groups)
+\end{itemize}
+
+This saves approximately 0.4 bits per weight with minimal overhead.
+
+\subsection{Evaluation Setup}
+
+\subsubsection{Model and Dataset}
+
+\begin{itemize}
+    \item \textbf{Model:} Llama 3.2-1B (1.24B parameters) \cite{llama32}
+    \item \textbf{Dataset:} CoQA (Conversational Question Answering) \cite{reddy2019coqa}
+    \item \textbf{Metric:} F1 score (primary), Exact Match (secondary)
+    \item \textbf{Evaluation:} Zero-shot, 50 samples for ablation, full dataset for final
+\end{itemize}
+
+\subsubsection{Hardware}
+
+All experiments run on NVIDIA A10G GPU (24GB VRAM) via Modal serverless platform, ensuring consistent conditions.
+
+\subsection{Experimental Design}
+
+We conduct a controlled ablation study varying one factor at a time:
+
+\begin{table}[h]
+\centering
+\caption{Ablation factors studied}
+\label{tab:ablation_factors}
+\begin{tabular}{ll}
+\toprule
+\textbf{Factor} & \textbf{Values} \\
+\midrule
+Quantization Format & NF4, FP4 \\
+Double Quantization & True, False \\
+Compute Dtype & FP16, BF16 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Implementation}
+
+Our codebase follows a modular design:
+
+\begin{itemize}
+    \item \texttt{config.py}: Centralized hyperparameter management
+    \item \texttt{quantize.py}: Model loading with quantization
+    \item \texttt{evaluate.py}: CoQA evaluation via lm-evaluation-harness
+    \item \texttt{benchmark.py}: Latency and memory measurement
+    \item \texttt{modal\_app.py}: Cloud GPU orchestration
+\end{itemize}
+
+Key implementation choices include:
+\begin{itemize}
+    \item \textbf{SDPA attention} for efficient inference
+    \item \textbf{Incremental saves} to preserve partial results
+    \item \textbf{Fail-fast} error handling to conserve compute
+\end{itemize}
+

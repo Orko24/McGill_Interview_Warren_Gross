@@ -1034,3 +1034,142 @@ with torch.inference_mode():
 
 ---
 
+# Session 3: LaTeX Report Setup
+**Date**: January 16, 2026
+**Time**: ~3:30 PM
+
+---
+
+## What We Did
+
+### Created LaTeX Report Structure
+
+Set up modular LaTeX report in `reports/report1/`:
+
+```
+reports/report1/
+├── main.tex              # Master document (imports sections)
+├── references.bib        # BibTeX bibliography
+├── Makefile              # Build automation
+├── sections/
+│   ├── abstract.tex      # ~100 word summary
+│   ├── introduction.tex  # Problem + contributions
+│   ├── methods.tex       # Quantization techniques + setup
+│   ├── results.tex       # Tables with all findings
+│   ├── discussion.tex    # Analysis + recommendations
+│   └── conclusion.tex    # Summary + reproducibility
+└── figures/              # For diagrams (empty for now)
+```
+
+### Key Design Decisions
+
+1. **Modular sections**: Each section in its own file → easy editing
+2. **BibTeX**: Separate `.bib` file → clean reference management
+3. **Makefile**: `make` builds full PDF, `make quick` for drafts
+4. **Two-column format**: Standard scientific paper layout
+5. **10pt font**: Fits 4 pages comfortably
+
+### Report Content (Draft)
+
+**Abstract highlights**:
+- 4-bit NF4 achieves 2.44× compression with no accuracy loss
+- NF4 outperforms FP4 by 9.5% F1
+- Double quantization is "free"
+
+**Tables prepared**:
+1. Main results (NF4 vs FP4 vs baseline)
+2. Double quantization ablation
+3. Compute dtype ablation
+4. Hardware performance (placeholder)
+
+**References added** (10 key papers):
+- Llama original paper
+- BitsAndBytes (LLM.int8())
+- QLoRA paper
+- CoQA dataset
+- GPTQ, AWQ papers
+- Quantization survey
+
+---
+
+## To Compile the Report
+
+```bash
+cd ~/Desktop/McGIll_interviews/llama-quantization/reports/report1
+make        # Full build with bibliography
+make quick  # Quick build (no bib)
+```
+
+Requires: `pdflatex` and `bibtex` (install with `sudo apt install texlive-latex-base texlive-bibtex-extra`)
+
+---
+
+## Project Structure Update (Complete)
+
+```
+llama-quantization/
+├── 📁 Core Code
+│   ├── config.py, quantize.py, evaluate.py
+│   ├── benchmark.py, main.py, sweep.py, visualize.py
+│   └── modal_app.py         # Main entry point
+│
+├── 📁 Results
+│   └── results/*.json       # All experiment data
+│
+├── 📁 Documentation
+│   ├── design_report/       # Technical docs
+│   └── research_sessions/   # This log
+│
+├── 📁 Reports (NEW)
+│   └── report1/             # LaTeX report v1
+│       ├── main.tex
+│       ├── sections/*.tex
+│       └── references.bib
+│
+├── 📁 Config
+│   ├── .env, env.example
+│   └── requirements.txt
+│
+└── 📁 Legacy (kept for showcase)
+    ├── Dockerfile, docker-compose.yaml
+    └── run.sh
+```
+
+---
+
+## Session 3b: Visualizations Added
+**Time**: ~4:00 PM
+
+### Generated 6 Publication Figures
+
+Created `reports/report1/generate_figures.py` - generates all figures automatically:
+
+| Figure | File | Description |
+|--------|------|-------------|
+| Fig 1 | `fig1_accuracy_vs_memory.pdf` | Scatter plot: accuracy vs memory tradeoff |
+| Fig 2 | `fig2_all_configurations.pdf` | Bar chart: all 6 configurations compared |
+| Fig 3 | `fig3_nf4_vs_fp4.pdf` | **Key figure**: NF4 vs FP4 side-by-side |
+| Fig 4 | `fig4_ablation_heatmap.pdf` | Heatmap: quant type × double quant |
+| Fig 5 | `fig5_compression_waterfall.pdf` | Waterfall: memory reduction breakdown |
+| Fig 6 | `fig6_summary_infographic.pdf` | Key metrics at a glance |
+
+### To Regenerate Figures
+```bash
+cd ~/Desktop/McGIll_interviews/llama-quantization
+source .venv/bin/activate
+python reports/report1/generate_figures.py
+```
+
+### Report Compilation Status
+- **Current**: 5 pages (needs trimming to 4)
+- **Figures**: ✓ All 6 included in results section
+- **Bibliography**: ✓ 10 citations compiled
+
+### To Compile Report
+```bash
+cd ~/Desktop/McGIll_interviews/llama-quantization/reports/report1
+make  # Full build with bibtex
+```
+
+---
+
