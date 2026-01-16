@@ -6,15 +6,40 @@ Measures: Memory usage, latency, throughput, model size
 import gc
 import time
 import logging
+import warnings
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 
 import torch
+from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Suppress the padding side warning - we handle it in tokenizer loading
+warnings.filterwarnings("ignore", message=".*right-padding was detected.*")
 
 from config import ExperimentConfig, BenchmarkConfig
 
 logger = logging.getLogger(__name__)
+
+
+# ============================================================================
+# PyTorch Optimizations
+# ============================================================================
+
+def apply_torch_optimizations():
+    """Apply PyTorch backend optimizations for faster inference"""
+    # Enable TF32 for faster matmuls on Ampere+ GPUs (A10G, A100, etc.)
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    
+    # Enable cudnn benchmarking for optimized convolution algorithms
+    torch.backends.cudnn.benchmark = True
+    
+    # Set float32 matmul precision (medium = TF32, high = FP32)
+    if hasattr(torch, 'set_float32_matmul_precision'):
+        torch.set_float32_matmul_precision('medium')
+    
+    logger.info("PyTorch optimizations enabled: TF32, cuDNN benchmark")
 
 
 @dataclass
@@ -85,7 +110,7 @@ def measure_prefill_latency(
     """
     results = {}
     
-    for length in input_lengths:
+    for length in tqdm(input_lengths, desc="📊 Prefill latency", unit="len"):
         # Create dummy input of specified length
         dummy_text = "Hello " * (length // 2)  # Approximate token count
         inputs = tokenizer(
@@ -98,7 +123,7 @@ def measure_prefill_latency(
         
         # Warmup
         for _ in range(warmup_runs):
-            with torch.no_grad():
+            with torch.inference_mode():  # Faster than no_grad
                 _ = model(**inputs)
         
         # Synchronize GPU
@@ -110,7 +135,7 @@ def measure_prefill_latency(
         for _ in range(benchmark_runs):
             start = time.perf_counter()
             
-            with torch.no_grad():
+            with torch.inference_mode():
                 _ = model(**inputs)
             
             if torch.cuda.is_available():
@@ -151,7 +176,7 @@ def measure_decode_latency(
     
     # Warmup
     for _ in range(warmup_runs):
-        with torch.no_grad():
+        with torch.inference_mode():
             _ = model.generate(
                 **inputs,
                 max_new_tokens=10,
@@ -164,10 +189,10 @@ def measure_decode_latency(
     
     # Benchmark
     latencies = []
-    for _ in range(benchmark_runs):
+    for _ in tqdm(range(benchmark_runs), desc="📊 Decode latency", unit="run"):
         start = time.perf_counter()
         
-        with torch.no_grad():
+        with torch.inference_mode():
             outputs = model.generate(
                 **inputs,
                 max_new_tokens=output_length,
@@ -207,7 +232,7 @@ def measure_throughput(
     """
     results = {}
     
-    for batch_size in batch_sizes:
+    for batch_size in tqdm(batch_sizes, desc="📊 Throughput", unit="batch"):
         try:
             # Create batched input
             dummy_text = "Hello " * (input_length // 2)
@@ -221,7 +246,7 @@ def measure_throughput(
             
             # Warmup
             for _ in range(warmup_runs):
-                with torch.no_grad():
+                with torch.inference_mode():
                     _ = model.generate(
                         **inputs,
                         max_new_tokens=10,
@@ -239,7 +264,7 @@ def measure_throughput(
             for _ in range(benchmark_runs):
                 start = time.perf_counter()
                 
-                with torch.no_grad():
+                with torch.inference_mode():
                     outputs = model.generate(
                         **inputs,
                         max_new_tokens=output_length,
@@ -282,6 +307,9 @@ def run_benchmarks(
     device = config.eval.device
     
     logger.info("Starting hardware benchmarks...")
+    
+    # Apply PyTorch optimizations
+    apply_torch_optimizations()
     
     # Clear memory before benchmarks
     clear_gpu_memory()

@@ -170,4 +170,37 @@ EXPERIMENTS = {
             awq_group_size=128,
         ),
     ),
+    
+    # === HYPERPARAMETER ABLATION EXPERIMENTS ===
+    
+    # Double quantization ON vs OFF
+    "bnb_4bit_nf4_no_double": ExperimentConfig(
+        name="bnb_4bit_nf4_no_double",
+        quantization=QuantizationConfig(
+            method=QuantMethod.BITSANDBYTES_4BIT,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_use_double_quant=False,  # OFF
+        ),
+    ),
+    
+    # Compute dtype: BF16 vs FP16
+    "bnb_4bit_nf4_bf16": ExperimentConfig(
+        name="bnb_4bit_nf4_bf16",
+        quantization=QuantizationConfig(
+            method=QuantMethod.BITSANDBYTES_4BIT,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_compute_dtype=ComputeDtype.BF16,  # BF16 instead of FP16
+        ),
+    ),
+    
+    # FP4 without double quant
+    "bnb_4bit_fp4_no_double": ExperimentConfig(
+        name="bnb_4bit_fp4_no_double",
+        quantization=QuantizationConfig(
+            method=QuantMethod.BITSANDBYTES_4BIT,
+            bnb_4bit_quant_type="fp4",
+            bnb_4bit_use_double_quant=False,  # OFF
+        ),
+    ),
 }

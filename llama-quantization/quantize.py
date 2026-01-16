@@ -1,6 +1,10 @@
 """
 Quantization methods for Llama 3.2-1B
 Supports: BitsAndBytes (4/8-bit), GPTQ, AWQ
+
+Optimizations:
+- SDPA (Scaled Dot Product Attention) / Flash Attention 2 enabled by default
+- Uses PyTorch's native efficient attention implementation
 """
 
 import torch
@@ -21,6 +25,10 @@ from config import (
 
 logger = logging.getLogger(__name__)
 
+# Use SDPA (includes Flash Attention 2 when available)
+# Falls back gracefully if Flash Attention not installed
+ATTN_IMPLEMENTATION = "sdpa"
+
 
 def get_torch_dtype(dtype: ComputeDtype) -> torch.dtype:
     """Convert config dtype to torch dtype"""
@@ -38,6 +46,7 @@ def load_tokenizer(config: ExperimentConfig) -> AutoTokenizer:
         config.model.model_id,
         revision=config.model.revision,
         trust_remote_code=config.model.trust_remote_code,
+        padding_side="left",  # Required for decoder-only models during generation
     )
     
     # Ensure padding token is set
@@ -54,6 +63,8 @@ def create_bnb_config(config: ExperimentConfig) -> BitsAndBytesConfig:
     if quant_config.method == QuantMethod.BITSANDBYTES_8BIT:
         return BitsAndBytesConfig(
             load_in_8bit=True,
+            llm_int8_threshold=6.0,  # Default threshold for outlier detection
+            llm_int8_has_fp16_weight=False,
         )
     
     elif quant_config.method == QuantMethod.BITSANDBYTES_4BIT:
@@ -100,9 +111,10 @@ def load_model_fp16(config: ExperimentConfig) -> AutoModelForCausalLM:
     model = AutoModelForCausalLM.from_pretrained(
         config.model.model_id,
         revision=config.model.revision,
-        torch_dtype=get_torch_dtype(config.model.torch_dtype),
+        dtype=get_torch_dtype(config.model.torch_dtype),  # Updated from torch_dtype
         device_map=config.model.device_map,
         trust_remote_code=config.model.trust_remote_code,
+        attn_implementation=ATTN_IMPLEMENTATION,
     )
     
     return model
@@ -121,6 +133,7 @@ def load_model_bnb(config: ExperimentConfig) -> AutoModelForCausalLM:
         quantization_config=bnb_config,
         device_map=config.model.device_map,
         trust_remote_code=config.model.trust_remote_code,
+        attn_implementation=ATTN_IMPLEMENTATION,
     )
     
     return model
@@ -145,9 +158,10 @@ def load_model_gptq(config: ExperimentConfig) -> AutoModelForCausalLM:
         model = AutoModelForCausalLM.from_pretrained(
             config.model.model_id,
             revision=config.model.revision,
-            torch_dtype=torch.float16,
+            dtype=torch.float16,  # Updated from torch_dtype
             device_map=config.model.device_map,
             trust_remote_code=config.model.trust_remote_code,
+            attn_implementation=ATTN_IMPLEMENTATION,
         )
         
         tokenizer = load_tokenizer(config)
@@ -210,6 +224,7 @@ def load_model_gptq(config: ExperimentConfig) -> AutoModelForCausalLM:
             quantization_config=gptq_config,
             device_map=config.model.device_map,
             trust_remote_code=config.model.trust_remote_code,
+            attn_implementation=ATTN_IMPLEMENTATION,
         )
         
         return model
@@ -276,6 +291,7 @@ def load_model_awq(config: ExperimentConfig) -> AutoModelForCausalLM:
             quantization_config=awq_config,
             device_map=config.model.device_map,
             trust_remote_code=config.model.trust_remote_code,
+            attn_implementation=ATTN_IMPLEMENTATION,
         )
         
         return model

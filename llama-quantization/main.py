@@ -20,6 +20,7 @@ from pathlib import Path
 from datetime import datetime
 
 import torch
+from tqdm import tqdm
 
 from config import ExperimentConfig, EXPERIMENTS, QuantMethod
 from quantize import load_quantized_model, get_model_memory_footprint
@@ -154,7 +155,7 @@ def run_all_experiments(
     
     all_results = []
     
-    for exp_name in experiments:
+    for exp_name in tqdm(experiments, desc="🔬 Experiments", unit="exp"):
         if exp_name not in EXPERIMENTS:
             logger.warning(f"Unknown experiment: {exp_name}, skipping...")
             continue
