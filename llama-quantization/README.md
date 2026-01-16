@@ -2,7 +2,45 @@
 
 Systematic evaluation of quantization methods for Llama 3.2-1B, minimizing bit-width while maintaining accuracy on CoQA.
 
-## Quick Start
+---
+
+## 🚀 Quick Start with Modal (Recommended)
+
+Modal handles everything in Docker containers on cloud GPUs. No VM setup needed.
+
+### One-Time Setup
+```bash
+# 1. Install modal locally
+pip install modal
+
+# 2. Authenticate (opens browser)
+modal setup
+
+# 3. Add your HuggingFace token to Modal secrets
+#    Go to: https://modal.com/secrets
+#    Create secret named "huggingface" with key HF_TOKEN=<your_token>
+```
+
+### Run Experiments
+```bash
+# Quick comparison: FP16 vs 8-bit vs 4-bit (minimum viable)
+modal run modal_app.py --quick --limit 50
+
+# Single experiment
+modal run modal_app.py --experiment bnb_4bit_nf4 --limit 100
+
+# Full BnB sweep
+modal run modal_app.py --sweep --method bnb --limit 200
+
+# Test GPU is working
+modal run modal_app.py::test_gpu
+```
+
+Results are saved to `./results/` locally.
+
+---
+
+## 🖥️ Local/SSH Quick Start (Alternative)
 
 ```bash
 # Install dependencies

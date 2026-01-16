@@ -26,3 +26,6 @@ sentencepiece>=0.1.99
 # Logging and tracking (optional)
 wandb>=0.16.0
 tensorboard>=2.15.0
+
+# Modal for cloud GPU (local install only)
+modal>=0.56.0
