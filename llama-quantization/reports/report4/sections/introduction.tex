@@ -1,0 +1,29 @@
+% ============================================================================
+% INTRODUCTION
+% ============================================================================
+\section{Introduction}
+\label{sec:introduction}
+
+Large language models (LLMs) have achieved remarkable performance across diverse natural language tasks \cite{touvron2023llama, touvron2023llama2}. However, their deployment remains constrained by substantial memory and computational requirements \cite{kaplan2020scaling}. A model with one billion parameters stored in 16-bit floating-point precision requires approximately 2.4 GB of memory for weights alone, limiting deployment on resource-constrained devices and increasing inference costs in production environments.
+
+Post-training quantization offers a principled approach to this challenge by reducing the numerical precision of model weights \cite{gholami2022survey, nagel2021white}. By representing weights with fewer bits, quantization can substantially reduce memory requirements. However, aggressive precision reduction risks degrading model accuracy, necessitating careful empirical study of this trade-off \cite{zhu2023survey}.
+
+\subsection{Contributions}
+
+This work presents a systematic empirical study of post-training quantization for Llama 3.2-1B \cite{llama32}. Our contributions are threefold:
+
+\begin{enumerate}
+    \item We conduct a controlled comparison of 4-bit quantization formats (NF4 and FP4) on the CoQA benchmark \cite{reddy2019coqa}, demonstrating that format selection yields a 9.5 percentage point difference in F1 score at equivalent memory cost.
+    
+    \item We perform ablation studies examining the effects of double quantization and compute dtype, finding that double quantization provides compression benefits without measurable accuracy loss.
+    
+    \item We provide a modular, reproducible implementation enabling systematic experimentation with quantization configurations.
+\end{enumerate}
+
+\subsection{Design Rationale}
+
+Our experimental design reflects several methodological considerations.
+
+We selected BitsAndBytes \cite{dettmers2022llmint8} for quantization as it enables weight compression during model loading without requiring calibration data. This approach simplifies deployment and ensures reproducibility across hardware configurations, in contrast to calibration-dependent methods such as GPTQ \cite{frantar2022gptq} and AWQ \cite{lin2023awq}.
+
+For evaluation, we employ the CoQA benchmark \cite{reddy2019coqa}, a conversational question answering task requiring multi-turn reasoning over passages. We report F1 score as the primary metric, as it captures partial correctness through word-level precision and recall computation, providing a more nuanced assessment than exact match for open-ended generation tasks \cite{rajpurkar2016squad}.

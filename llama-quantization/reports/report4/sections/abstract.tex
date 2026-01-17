@@ -1,0 +1,6 @@
+% ============================================================================
+% ABSTRACT
+% ============================================================================
+\begin{abstract}
+We investigate post-training quantization techniques for the Llama 3.2-1B language model, systematically evaluating the trade-off between model compression and task accuracy on the Conversational Question Answering (CoQA) benchmark. Through controlled ablation studies comparing 4-bit quantization formats (NF4 and FP4), double quantization, and compute precision configurations, we demonstrate that 4-bit NF4 quantization achieves 2.44$\times$ memory compression while preserving baseline accuracy. Our experiments reveal that quantization format selection significantly impacts performance: NF4 outperforms FP4 by 9.5 percentage points in F1 score at equivalent memory cost, attributable to NF4's distribution-aware quantization levels. Additionally, we find that double quantization provides further compression without measurable accuracy degradation. These findings inform practical deployment guidelines for memory-constrained inference environments.
+\end{abstract}
