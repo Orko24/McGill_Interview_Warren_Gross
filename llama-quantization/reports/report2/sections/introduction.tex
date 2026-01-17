@@ -1,0 +1,31 @@
+% ============================================================================
+% INTRODUCTION
+% ============================================================================
+\section{Introduction}
+\label{sec:introduction}
+
+Large Language Models (LLMs) have demonstrated remarkable capabilities across natural language tasks, but their deployment is constrained by substantial memory and computational requirements \cite{touvron2023llama}. A 1-billion parameter model in FP16 precision requires approximately 2.4 GB of GPU memory for weights alone, limiting deployment on edge devices and increasing inference costs.
+
+Quantization offers a solution by reducing the numerical precision of model weights. By representing weights with fewer bits (e.g., 4-bit instead of 16-bit), we achieve significant memory reduction. However, aggressive quantization risks accuracy degradation, necessitating careful study of this trade-off.
+
+\subsection{Contributions}
+
+This work makes three contributions:
+
+\begin{enumerate}
+    \item \textbf{Systematic comparison} of 4-bit quantization formats (NF4 vs. FP4) on Llama 3.2-1B, demonstrating NF4's 9.5\% F1 advantage.
+    
+    \item \textbf{Ablation study} of double quantization and compute dtype, finding double quantization provides compression at no accuracy cost.
+    
+    \item \textbf{Reproducible codebase} with modular design enabling easy experimentation.
+\end{enumerate}
+
+\subsection{Design Rationale}
+
+Our experimental design reflects several deliberate choices:
+
+\textbf{Why BitsAndBytes?} We selected BitsAndBytes \cite{dettmers2022llmint8} for quantization because it enables on-the-fly quantization during model loading without calibration data. This simplifies deployment and ensures reproducibility, as the same code works across different hardware.
+
+\textbf{Why Llama 3.2-1B?} This model size is practical for edge deployment while being large enough to exhibit meaningful quantization effects. Smaller models often tolerate quantization well, while larger models amplify compression benefits.
+
+\textbf{Why CoQA and F1?} CoQA (Conversational Question Answering) \cite{reddy2019coqa} tests multi-turn reasoning, which stresses model capabilities more than simple classification. F1 score captures both precision and recall, providing a balanced metric that handles partial matches common in QA tasks. Unlike exact match, F1 rewards partially correct answers.

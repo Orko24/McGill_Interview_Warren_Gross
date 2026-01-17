@@ -1,0 +1,6 @@
+% ============================================================================
+% ABSTRACT
+% ============================================================================
+\begin{abstract}
+We investigate post-training quantization for Llama 3.2-1B, evaluating the accuracy-compression trade-off on CoQA (Conversational Question Answering). Through ablation studies comparing 4-bit formats (NF4 vs. FP4), double quantization, and compute precision, we find that \textbf{4-bit NF4 achieves 2.44$\times$ memory compression with no accuracy loss}. Critically, NF4 outperforms FP4 by 9.5\% F1 at identical memory cost, demonstrating that quantization format selection is as important as bit-width selection. Double quantization provides additional compression at no accuracy cost. Our modular codebase enables reproducible experimentation.
+\end{abstract}

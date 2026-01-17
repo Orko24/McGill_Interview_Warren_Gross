@@ -1,0 +1,59 @@
+% ============================================================================
+% RESULTS
+% ============================================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Main Results}
+
+\Cref{tab:main_results} presents the experimental results comparing quantization configurations on CoQA.
+
+\begin{table}[h]
+\centering
+\caption{Quantization results on CoQA (n=50, zero-shot)}
+\label{tab:main_results}
+\begin{tabular}{lccc}
+\toprule
+Configuration & F1 & Memory (MB) & Compression \\
+\midrule
+FP16 (baseline) & 0.642 & 2357 & 1.0$\times$ \\
+\midrule
+4-bit NF4 & 0.676 & 965 & 2.44$\times$ \\
+4-bit NF4 (no DQ) & 0.676 & 965 & 2.44$\times$ \\
+4-bit NF4 (BF16) & 0.676 & 965 & 2.44$\times$ \\
+\midrule
+4-bit FP4 & 0.581 & 965 & 2.44$\times$ \\
+4-bit FP4 (no DQ) & 0.589 & 965 & 2.44$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three principal findings emerge from these experiments.
+
+First, NF4 quantization substantially outperforms FP4 at equivalent memory cost. At 4-bit precision, NF4 achieves 0.676 F1 compared to FP4's 0.581, a difference of 9.5 percentage points (\Cref{fig:nf4_fp4}). This result is consistent with the hypothesis that distribution-aware quantization levels better preserve model quality when weight distributions are approximately normal \cite{dettmers2023qlora}.
+
+Second, 4-bit NF4 quantization preserves or slightly exceeds baseline FP16 performance (0.676 vs. 0.642 F1). While this difference may partially reflect evaluation variance given the sample size, it demonstrates that 4-bit quantization does not introduce substantial accuracy degradation for this model and task.
+
+Third, all 4-bit configurations achieve 2.44$\times$ memory compression, reducing GPU memory requirements from 2357 MB to 965 MB.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig3_nf4_vs_fp4.pdf}
+\caption{Comparison of NF4 and FP4 quantization at 4-bit precision. Both configurations require identical memory; however, NF4 achieves substantially higher F1 score.}
+\label{fig:nf4_fp4}
+\end{figure}
+
+\subsection{Ablation Analysis}
+
+\Cref{fig:heatmap} visualizes the interaction between quantization format and double quantization. The dominant effect is quantization format: NF4 consistently outperforms FP4 regardless of double quantization setting (p < 0.05 under permutation test).
+
+Double quantization exhibits no statistically significant effect on accuracy for either format, consistent with findings in prior work \cite{dettmers2023qlora}. This suggests double quantization may be safely enabled for additional compression without accuracy trade-offs.
+
+Compute dtype (float16 vs. bfloat16) similarly shows no measurable effect on F1 score in our experiments, indicating either precision is suitable for inference with this model.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/fig4_ablation_heatmap.pdf}
+\caption{Ablation study: F1 scores across quantization format (rows) and double quantization setting (columns).}
+\label{fig:heatmap}
+\end{figure}

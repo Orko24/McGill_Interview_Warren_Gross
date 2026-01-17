@@ -1173,3 +1173,108 @@ make  # Full build with bibtex
 
 ---
 
+## Session 3c: Draft 2 - Assignment-Compliant Report
+**Time**: ~4:25 PM
+
+### What Changed from Draft 1 to Draft 2
+
+Created `reports/report2/` with major improvements:
+
+| Issue | Draft 1 | Draft 2 |
+|-------|---------|---------|
+| Page count | 5 pages | **4 pages** ✓ |
+| Design justification | Missing | **Added** (Why BnB? Why Llama? Why F1?) |
+| Experimental setup | Minimal | **Detailed** (hardware, metrics, protocol) |
+| Em-dashes | Present | **Replaced** with literary transitions |
+| Figure 5 | Didn't render | **Fixed** (removed from main, kept 2 key figures) |
+
+### Key Additions in Draft 2
+
+**Section 1.3 - Design Rationale** (NEW):
+- Why BitsAndBytes? (no calibration, reproducible)
+- Why Llama 3.2-1B? (practical size, meaningful effects)
+- Why CoQA and F1? (multi-turn reasoning, partial match credit)
+
+**Section 2 - Experimental Setup** (EXPANDED):
+- Detailed evaluation protocol
+- Hardware configuration (A10G, SDPA, TF32)
+- Ablation design table with hypotheses
+- Implementation architecture overview
+
+### Files Modified
+```
+reports/report2/sections/
+├── abstract.tex      # Tightened
+├── introduction.tex  # Added design rationale
+├── methods.tex       # Renamed to "Experimental Setup", expanded
+├── results.tex       # Condensed, kept 2 figures
+├── discussion.tex    # Removed em-dashes, literary flow
+└── conclusion.tex    # Condensed
+```
+
+### To Compile Draft 2
+```bash
+cd ~/Desktop/McGIll_interviews/llama-quantization/reports/report2
+pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
+# OR
+make
+```
+
+### Report Status
+- **Pages**: 4 (excluding references) ✓
+- **Design choices**: Justified ✓
+- **Experimental setup**: Detailed ✓
+- **F1 rationale**: Explained ✓
+- **Figures**: 2 key figures (NF4 vs FP4, ablation heatmap)
+
+---
+
+## Session 3d: Draft 3 - Academic Tone
+**Time**: ~4:40 PM
+
+### Changes from Draft 2 to Draft 3
+
+| Issue | Draft 2 | Draft 3 |
+|-------|---------|---------|
+| Tone | Business/pitchy | Academic/formal |
+| Bold text | Excessive emphasis | Minimal, appropriate use |
+| References | 10 citations | 18 citations |
+| Language | Marketing-style | Scientific prose |
+
+### Academic Improvements
+
+1. Removed unnecessary bold formatting (e.g., "Key findings:" → "Three principal findings emerge")
+2. Replaced sales language with formal academic phrasing
+3. Added proper citations throughout for claims
+4. Used passive voice and hedged language where appropriate
+5. Structured findings with "First...", "Second...", "Third..." instead of bullet emphasis
+
+### Expanded Bibliography (18 references)
+
+New citations added:
+- `touvron2023llama2` - Llama 2 paper
+- `kaplan2020scaling` - Scaling laws
+- `gholami2022survey` - Quantization survey
+- `nagel2021white` - Quantization white paper
+- `zhu2023survey` - LLM compression survey
+- `xiao2023smoothquant` - SmoothQuant
+- `vaswani2017attention` - Attention paper
+- `shazeer2019fast` - Multi-query attention
+- `dao2022flashattention` - FlashAttention
+- `rajpurkar2016squad` - SQuAD (for F1 metric context)
+- `jacob2018quantization` - QAT fundamentals
+
+### Report Structure
+- **Pages**: 4 content + 1 references = 5 total
+- **Per assignment**: "excluding references, is 4 pages" ✓
+- **Figures**: 2 (NF4 vs FP4, ablation heatmap)
+- **Tables**: 2 (main results, ablation factors)
+
+### To Compile Draft 3
+```bash
+cd ~/Desktop/McGIll_interviews/llama-quantization/reports/report3
+pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
+```
+
+---
+
