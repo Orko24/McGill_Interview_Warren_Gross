@@ -1,45 +1,41 @@
 """
-Hardware benchmarking module.
+Benchmark module - hardware performance measurement.
 
-Measures:
-- Memory usage (allocated, peak)
-- Prefill latency (prompt processing)
-- Decode latency (per-token generation)
-- Throughput (tokens per second)
+Classes:
+    BenchmarkSuite: Orchestrates all benchmarks
+    MemoryBenchmark: Model size and GPU memory usage
+    LatencyBenchmark: Prefill and decode latency
+    ThroughputBenchmark: Tokens per second at different batch sizes
 
-Usage:
-    from llama_quant.benchmark import run_benchmarks
-    
-    results = run_benchmarks(model, tokenizer, config)
+Example:
+    >>> from llama_quant.benchmark import BenchmarkSuite
+    >>> 
+    >>> suite = BenchmarkSuite(model, tokenizer)
+    >>> results = suite.run_all()
+    >>> suite.print_summary(results)
 """
 
-from llama_quant.benchmark.runner import (
-    run_benchmarks,
-    BenchmarkResult,
-    apply_torch_optimizations,
-)
-from llama_quant.benchmark.memory import (
-    measure_model_size,
-    get_gpu_memory_info,
-    clear_gpu_memory,
-)
-from llama_quant.benchmark.latency import (
-    measure_prefill_latency,
-    measure_decode_latency,
-)
-from llama_quant.benchmark.throughput import (
-    measure_throughput,
-)
+from llama_quant.benchmark.base import Benchmark, BenchmarkConfig, BenchmarkResult
+from llama_quant.benchmark.memory import MemoryBenchmark, clear_gpu_memory
+from llama_quant.benchmark.latency import LatencyBenchmark
+from llama_quant.benchmark.throughput import ThroughputBenchmark
+from llama_quant.benchmark.runner import BenchmarkSuite, run_benchmarks
 
 __all__ = [
-    "run_benchmarks",
+    # Base classes
+    "Benchmark",
+    "BenchmarkConfig", 
     "BenchmarkResult",
-    "apply_torch_optimizations",
-    "measure_model_size",
-    "get_gpu_memory_info",
+    
+    # Concrete benchmarks
+    "MemoryBenchmark",
+    "LatencyBenchmark", 
+    "ThroughputBenchmark",
+    
+    # Suite
+    "BenchmarkSuite",
+    
+    # Backwards-compatible function
+    "run_benchmarks",
     "clear_gpu_memory",
-    "measure_prefill_latency",
-    "measure_decode_latency",
-    "measure_throughput",
 ]
-
