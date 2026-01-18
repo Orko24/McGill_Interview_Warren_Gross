@@ -6,10 +6,10 @@
 .env
 *.env
 
-# Results (generated, don't commit)
-results/
-*.json
-!package.json
+# Results - track experiment outputs
+# (JSON files in results/ are tracked for reproducibility)
+!results/
+!results/*.json
 
 # Python
 __pycache__/
