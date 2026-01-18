@@ -145,7 +145,8 @@ class ComparisonRunner:
     and provides summary statistics.
     """
     
-    DEFAULT_EXPERIMENTS = ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4", "bnb_8bit"]
+    # Note: bnb_8bit excluded due to CUDA kernel bug on A10G (bitsandbytes issue)
+    DEFAULT_EXPERIMENTS = ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4"]
     
     def __init__(self, hf_cache_dir: str = "/cache/huggingface"):
         self.runner = ExperimentRunner(hf_cache_dir)

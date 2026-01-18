@@ -15,6 +15,7 @@ since it only runs in Modal cloud where dependencies are installed.
 """
 
 import json
+import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -23,7 +24,10 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING
 import modal
 
 # GPU-side imports (only available in Modal cloud environment)
-# Uses TYPE_CHECKING for IDE support, actual import at runtime in cloud
+# Add Modal cloud path for imports
+if "/root/code" not in sys.path:
+    sys.path.insert(0, "/root/code")
+
 if TYPE_CHECKING:
     from infra.gpu_runner import ExperimentRunner, ExperimentRequest, ComparisonRunner
 
@@ -182,9 +186,9 @@ def main(
     
     # Dispatch to appropriate runner
     if all_experiments:
+        # Note: bnb_8bit excluded due to CUDA kernel bug on A10G
         experiments = [
             "fp16_baseline",
-            "bnb_8bit",
             "bnb_4bit_nf4",
             "bnb_4bit_fp4",
             "bnb_4bit_nf4_no_double",
