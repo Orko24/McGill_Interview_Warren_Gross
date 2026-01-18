@@ -1,0 +1,15 @@
+% ============================================================================
+% CONCLUSION
+% ============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented a systematic empirical study of post-training quantization for Llama 3.2-1B, examining the effects of quantization format, double quantization, and compute precision on CoQA performance.
+
+Our experiments yield three principal findings. First, 4-bit NF4 quantization achieves 2.44$\times$ memory compression (2357 MB to 965 MB) while preserving baseline accuracy. Second, quantization format selection significantly impacts performance: NF4 outperforms FP4 by 9.5 percentage points in F1 score at identical memory cost, attributable to NF4's distribution-aware quantization levels. Third, double quantization provides additional compression without measurable accuracy degradation.
+
+These findings support deploying Llama 3.2-1B at 4-bit NF4 precision in memory-constrained inference environments, enabling substantial resource reduction while maintaining task performance.
+
+\subsection*{Reproducibility}
+
+Implementation and experimental configurations are available in the accompanying code repository.
