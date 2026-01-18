@@ -1,0 +1,71 @@
+% ============================================================================
+% DISCUSSION
+% ============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Why NF4 Outperforms FP4}
+
+The substantial 9.5\% F1 gap between NF4 and FP4 warrants explanation. Neural network weights typically follow a zero-centered, approximately normal distribution \cite{dettmers2023qlora}. NF4's non-uniform quantization levels, optimized for $\mathcal{N}(0, \sigma^2)$, concentrate more representational capacity near zero where weights are dense, while FP4's uniform spacing wastes levels on sparse tail regions.
+
+\begin{figure}[h]
+\centering
+% Placeholder for weight distribution figure
+\fbox{\parbox{0.9\linewidth}{\centering\vspace{2em}[Weight Distribution vs. Quantization Levels]\vspace{2em}}}
+\caption{Conceptual illustration: NF4 levels (blue) vs. FP4 levels (red) overlaid on typical weight distribution.}
+\label{fig:nf4_vs_fp4}
+\end{figure}
+
+\subsection{Quantization as Regularization}
+
+The observation that NF4 slightly \textit{exceeds} FP16 performance (0.6758 vs. 0.6418) is intriguing. Possible explanations:
+
+\begin{enumerate}
+    \item \textbf{Implicit regularization:} Quantization noise may act as regularization, improving generalization on the evaluation set.
+    
+    \item \textbf{Evaluation variance:} With only 50 samples, the 95\% confidence interval is approximately $\pm$0.07, making this difference not statistically significant.
+    
+    \item \textbf{Numerical stability:} Lower precision may avoid certain floating-point pathologies.
+\end{enumerate}
+
+Further investigation with full dataset evaluation would clarify this.
+
+\subsection{Practical Recommendations}
+
+Based on our experiments, we recommend:
+
+\begin{enumerate}
+    \item \textbf{Use NF4 for all 4-bit quantization:} It consistently outperforms FP4 at zero additional cost.
+    
+    \item \textbf{Enable double quantization:} Free additional compression with no accuracy penalty.
+    
+    \item \textbf{Use FP16 compute dtype:} Marginally better than BF16 for this model.
+    
+    \item \textbf{4-bit is sufficient:} 8-bit quantization was unstable on A10G hardware; 4-bit provides excellent accuracy with better compression.
+\end{enumerate}
+
+\subsection{Limitations}
+
+\begin{itemize}
+    \item \textbf{Single model:} Results are specific to Llama 3.2-1B; larger models may behave differently.
+    
+    \item \textbf{Single task:} CoQA is a conversational QA task; other tasks (summarization, coding) may show different sensitivities.
+    
+    \item \textbf{Post-training only:} We did not explore Quantization-Aware Training (QAT), which may achieve better results for aggressive quantization.
+    
+    \item \textbf{Sample size:} Ablations used 50 samples; full dataset evaluation needed for production recommendations.
+\end{itemize}
+
+\subsection{Future Work}
+
+\begin{itemize}
+    \item \textbf{GPTQ/AWQ comparison:} Calibration-based methods may outperform BitsAndBytes at lower bit-widths.
+    
+    \item \textbf{Mixed precision:} Quantizing different layers at different precisions based on sensitivity analysis.
+    
+    \item \textbf{Hardware-specific kernels:} Custom CUDA kernels for quantized operations could improve throughput.
+    
+    \item \textbf{Larger models:} Scaling analysis to 7B/13B models where compression benefits are amplified.
+\end{itemize}
+
+

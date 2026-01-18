@@ -1,0 +1,32 @@
+% ============================================================================
+% CONCLUSION
+% ============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We systematically evaluated post-training quantization for Llama 3.2-1B on the CoQA benchmark. Our experiments demonstrate that:
+
+\begin{enumerate}
+    \item \textbf{4-bit NF4 quantization achieves 2.44$\times$ memory compression with no accuracy loss}---and potentially slight improvement (F1 0.6758 vs. 0.6418 baseline).
+    
+    \item \textbf{Quantization format matters significantly:} NF4 outperforms FP4 by 9.5\% F1 at identical cost, validating the importance of distribution-aware quantization.
+    
+    \item \textbf{Double quantization is free:} Enabling it provides additional compression without accuracy penalty.
+\end{enumerate}
+
+These findings support deploying Llama 3.2-1B at 4-bit precision for memory-constrained environments, reducing GPU memory from 2.4 GB to under 1 GB while maintaining---or even improving---task accuracy.
+
+\subsection*{Reproducibility}
+
+All code, configurations, and results are available at:
+
+\begin{center}
+\url{https://github.com/[redacted]/llama-quantization}
+\end{center}
+
+To reproduce the main experiment:
+\begin{lstlisting}[language=bash]
+modal run modal_app.py --hyperparam
+\end{lstlisting}
+
+

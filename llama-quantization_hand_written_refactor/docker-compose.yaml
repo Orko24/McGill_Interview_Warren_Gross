@@ -1,0 +1,142 @@
+# =============================================================================
+# Docker Compose for Llama 3.2-1B Quantization
+# =============================================================================
+# EVERYTHING runs inside Docker. No local Python/venv needed.
+#
+# Usage:
+#   docker-compose build                              # Build image (once)
+#   docker-compose run --rm quant                     # Interactive shell
+#   docker-compose run --rm quick                     # Quick 3-way comparison
+#   docker-compose run --rm bnb-sweep                 # Full BnB sweep
+#   docker-compose run --rm baseline                  # FP16 baseline only
+#
+# Custom experiments:
+#   docker-compose run --rm quant python main.py --experiment bnb_4bit_nf4 --limit 100
+# =============================================================================
+
+version: "3.8"
+
+services:
+  # ---------------------------------------------------------------------------
+  # Main service - interactive shell or custom commands
+  # ---------------------------------------------------------------------------
+  quant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # GPU access (NVIDIA)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    
+    # Environment
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - HF_HOME=/cache/huggingface
+      - TRANSFORMERS_CACHE=/cache/huggingface
+      - CUDA_VISIBLE_DEVICES=0
+    
+    # Volumes
+    volumes:
+      # Results persist to host
+      - ./results:/app/results
+      
+      # HuggingFace model cache (Docker volume, persists between runs)
+      # Models download ONCE, then cached. ~4GB for Llama 3.2-1B
+      - hf-cache:/cache/huggingface
+      
+      # Live code mounting (edit locally, runs in Docker)
+      - ./config.py:/app/config.py:ro
+      - ./quantize.py:/app/quantize.py:ro
+      - ./evaluate.py:/app/evaluate.py:ro
+      - ./benchmark.py:/app/benchmark.py:ro
+      - ./main.py:/app/main.py:ro
+      - ./sweep.py:/app/sweep.py:ro
+      - ./visualize.py:/app/visualize.py:ro
+    
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    
+    # Default: drop into bash shell
+    command: bash
+
+  # ---------------------------------------------------------------------------
+  # Quick comparison: FP16 vs 8-bit vs 4-bit NF4
+  # This is your minimum viable submission
+  # ---------------------------------------------------------------------------
+  quick:
+    extends:
+      service: quant
+    command: >
+      python sweep.py --quick --limit 100
+
+  # ---------------------------------------------------------------------------
+  # Full BitsAndBytes sweep (NF4, FP4, double quant variations)
+  # ---------------------------------------------------------------------------
+  bnb-sweep:
+    extends:
+      service: quant
+    command: >
+      python sweep.py --method bnb --limit 200
+
+  # ---------------------------------------------------------------------------
+  # Individual experiments
+  # ---------------------------------------------------------------------------
+  baseline:
+    extends:
+      service: quant
+    command: >
+      python main.py --experiment fp16_baseline --limit 200
+
+  bnb-8bit:
+    extends:
+      service: quant
+    command: >
+      python main.py --experiment bnb_8bit --limit 200
+
+  bnb-4bit:
+    extends:
+      service: quant
+    command: >
+      python main.py --experiment bnb_4bit_nf4 --limit 200
+
+  # ---------------------------------------------------------------------------
+  # Generate figures from results
+  # ---------------------------------------------------------------------------
+  figures:
+    extends:
+      service: quant
+    command: >
+      python visualize.py results/*.json
+
+  # ---------------------------------------------------------------------------
+  # Full pipeline: run all experiments + generate figures
+  # ---------------------------------------------------------------------------
+  full-run:
+    extends:
+      service: quant
+    command: >
+      bash -c "
+        echo '=== Running FP16 Baseline ===' &&
+        python main.py --experiment fp16_baseline --limit 200 &&
+        echo '=== Running 8-bit ===' &&
+        python main.py --experiment bnb_8bit --limit 200 &&
+        echo '=== Running 4-bit NF4 ===' &&
+        python main.py --experiment bnb_4bit_nf4 --limit 200 &&
+        echo '=== Generating Figures ===' &&
+        python visualize.py results/*.json &&
+        echo '=== DONE! Check ./results/ ==='
+      "
+
+# Persistent volume for model cache
+# Models download once (~4GB), then reused
+volumes:
+  hf-cache:
+    driver: local
+

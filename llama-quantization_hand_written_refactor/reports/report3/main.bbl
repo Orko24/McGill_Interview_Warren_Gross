@@ -1,0 +1,122 @@
+\begin{thebibliography}{10}
+
+\bibitem{dao2022flashattention}
+Tri Dao, Dan Fu, Stefano Ermon, Atri Rudra, and Christopher R{\'e}.
+\newblock {FlashAttention}: Fast and memory-efficient exact attention with
+  {IO}-awareness.
+\newblock {\em Advances in Neural Information Processing Systems},
+  35:16344--16359, 2022.
+
+\bibitem{dettmers2022llmint8}
+Tim Dettmers, Mike Lewis, Younes Belkada, and Luke Zettlemoyer.
+\newblock {LLM.int8()}: 8-bit matrix multiplication for transformers at scale.
+\newblock {\em Advances in Neural Information Processing Systems},
+  35:30318--30332, 2022.
+
+\bibitem{dettmers2023qlora}
+Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer.
+\newblock {QLoRA}: Efficient finetuning of quantized {LLMs}.
+\newblock {\em Advances in Neural Information Processing Systems}, 36, 2023.
+
+\bibitem{frantar2022gptq}
+Elias Frantar, Saleh Ashkboos, Torsten Hoefler, and Dan Alistarh.
+\newblock {GPTQ}: Accurate post-training quantization for generative
+  pre-trained transformers.
+\newblock {\em arXiv preprint arXiv:2210.17323}, 2022.
+
+\bibitem{eval2023harness}
+Leo Gao, Jonathan Tow, Baber Abbasi, Stella Biderman, Sid Black, Anthony
+  DiPofi, Charles Foster, Laurence Golding, Jeffrey Hsu, et~al.
+\newblock A framework for few-shot language model evaluation.
+\newblock In {\em Zenodo}, 2023.
+
+\bibitem{gholami2022survey}
+Amir Gholami, Sehoon Kim, Zhen Dong, Zhewei Yao, Michael~W Mahoney, and Kurt
+  Keutzer.
+\newblock A survey of quantization methods for efficient neural network
+  inference.
+\newblock {\em Low-Power Computer Vision}, pages 291--326, 2022.
+
+\bibitem{jacob2018quantization}
+Benoit Jacob, Skirmantas Kligys, Bo~Chen, Menglong Zhu, Matthew Tang, Andrew
+  Howard, Hartwig Adam, and Dmitry Kalenichenko.
+\newblock Quantization and training of neural networks for efficient
+  integer-arithmetic-only inference.
+\newblock {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 2704--2713, 2018.
+
+\bibitem{kaplan2020scaling}
+Jared Kaplan, Sam McCandlish, Tom Henighan, Tom~B Brown, Benjamin Chess, Rewon
+  Child, Scott Gray, Alec Radford, Jeffrey Wu, and Dario Amodei.
+\newblock Scaling laws for neural language models.
+\newblock {\em arXiv preprint arXiv:2001.08361}, 2020.
+
+\bibitem{lin2023awq}
+Ji~Lin, Jiaming Tang, Haotian Tang, Shang Yang, Xingyu Dang, and Song Han.
+\newblock {AWQ}: Activation-aware weight quantization for {LLM} compression and
+  acceleration.
+\newblock {\em arXiv preprint arXiv:2306.00978}, 2023.
+
+\bibitem{llama32}
+{Meta AI}.
+\newblock Llama 3.2: Lightweight models for edge devices.
+\newblock
+  \url{https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/},
+  2024.
+
+\bibitem{nagel2021white}
+Markus Nagel, Marios Fournarakis, Rana~Ali Amjad, Yelysei Bondarenko, Mart van
+  Baalen, and Tijmen Blankevoort.
+\newblock A white paper on neural network quantization.
+\newblock {\em arXiv preprint arXiv:2106.08295}, 2021.
+
+\bibitem{rajpurkar2016squad}
+Pranav Rajpurkar, Jian Zhang, Konstantin Lopyrev, and Percy Liang.
+\newblock {SQuAD}: 100,000+ questions for machine comprehension of text.
+\newblock {\em Proceedings of the Conference on Empirical Methods in Natural
+  Language Processing}, pages 2383--2392, 2016.
+
+\bibitem{reddy2019coqa}
+Siva Reddy, Danqi Chen, and Christopher~D Manning.
+\newblock {CoQA}: A conversational question answering challenge.
+\newblock {\em Transactions of the Association for Computational Linguistics},
+  7:249--266, 2019.
+
+\bibitem{shazeer2019fast}
+Noam Shazeer.
+\newblock Fast transformer decoding: One write-head is all you need.
+\newblock {\em arXiv preprint arXiv:1911.02150}, 2019.
+
+\bibitem{touvron2023llama}
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne
+  Lachaux, Timoth{\'e}e Lacroix, Baptiste Rozi{\`e}re, Naman Goyal, Eric
+  Hambro, Faisal Azhar, et~al.
+\newblock Llama: Open and efficient foundation language models.
+\newblock {\em arXiv preprint arXiv:2302.13971}, 2023.
+
+\bibitem{touvron2023llama2}
+Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine
+  Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale,
+  et~al.
+\newblock Llama 2: Open foundation and fine-tuned chat models.
+\newblock {\em arXiv preprint arXiv:2307.09288}, 2023.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock {\em Advances in Neural Information Processing Systems}, 30, 2017.
+
+\bibitem{xiao2023smoothquant}
+Guangxuan Xiao, Ji~Lin, Mickael Seznec, Hao Wu, Julien Demouth, and Song Han.
+\newblock {SmoothQuant}: Accurate and efficient post-training quantization for
+  large language models.
+\newblock {\em International Conference on Machine Learning}, pages
+  38087--38099, 2023.
+
+\bibitem{zhu2023survey}
+Xunyu Zhu, Jian Li, Yong Liu, Can Ma, and Weiping Wang.
+\newblock A survey on model compression for large language models.
+\newblock {\em arXiv preprint arXiv:2308.07633}, 2023.
+
+\end{thebibliography}

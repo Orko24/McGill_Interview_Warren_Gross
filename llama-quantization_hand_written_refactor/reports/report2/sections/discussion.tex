@@ -1,0 +1,30 @@
+% ============================================================================
+% DISCUSSION
+% ============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Why NF4 Outperforms FP4}
+
+The 9.5\% F1 gap between NF4 and FP4 reflects fundamental differences in how they allocate representational capacity. Neural network weights typically follow zero-centered, approximately normal distributions \cite{dettmers2023qlora}. NF4's non-uniform quantization levels concentrate near zero, where weights are dense. In contrast, FP4's uniform spacing allocates equal capacity to sparse tail regions, effectively wasting bits.
+
+This result has practical implications: when deploying 4-bit models, format selection matters as much as bit-width selection. Choosing FP4 over NF4 sacrifices nearly 10\% accuracy for no benefit.
+
+\subsection{Practical Recommendations}
+
+Based on our experiments, we recommend the following configuration for Llama 3.2-1B deployment:
+
+\begin{enumerate}
+    \item Use NF4 quantization format exclusively
+    \item Enable double quantization for additional compression
+    \item Either FP16 or BF16 compute dtype works well
+    \item Skip 8-bit quantization, as 4-bit achieves better compression with comparable accuracy
+\end{enumerate}
+
+\subsection{Limitations}
+
+Our study has several limitations. First, results are specific to Llama 3.2-1B and may not generalize to other architectures. Second, CoQA tests conversational QA; other tasks may show different quantization sensitivity. Third, we evaluated on 50 samples for ablation efficiency, so production deployments should validate on larger sets. Finally, we did not explore Quantization-Aware Training, which may improve results for aggressive compression.
+
+\subsection{Future Directions}
+
+Several extensions merit investigation. Calibration-based methods like GPTQ and AWQ may outperform BitsAndBytes at extreme compression. Mixed-precision approaches could quantize different layers at different precisions based on sensitivity analysis. Additionally, scaling to larger models (7B, 13B) would reveal whether compression benefits increase with model size.

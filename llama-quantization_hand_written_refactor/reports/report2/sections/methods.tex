@@ -1,0 +1,60 @@
+% ============================================================================
+% METHODS
+% ============================================================================
+\section{Experimental Setup}
+\label{sec:methods}
+
+\subsection{Quantization Techniques}
+
+We employ BitsAndBytes \cite{dettmers2022llmint8} for post-training quantization, applying weight compression during model loading.
+
+\subsubsection{4-bit Quantization Formats}
+
+\textbf{NF4 (Normal Float 4-bit):} Designed for normally-distributed weights. The 16 quantization levels are non-uniformly spaced, with higher density near zero where neural network weights concentrate. This distribution-aware design minimizes quantization error for typical weight distributions.
+
+\textbf{FP4 (4-bit Floating Point):} Standard floating-point with uniformly-spaced levels. Treats all value ranges equally, potentially wasting representational capacity on sparse tail regions.
+
+\subsubsection{Double Quantization}
+
+Double quantization compresses the quantization scales themselves by storing 8-bit quantized scales instead of FP32, with a shared FP32 ``scale of scales.'' This saves approximately 0.4 bits per weight with minimal computational overhead.
+
+\subsection{Evaluation Protocol}
+
+\subsubsection{Model Selection}
+We use \textbf{Llama 3.2-1B} \cite{llama32} (1.24B parameters), chosen for its balance of capability and deployability. The model uses grouped-query attention and was trained on diverse multilingual data.
+
+\subsubsection{Task and Metrics}
+\textbf{CoQA} \cite{reddy2019coqa} is a conversational QA benchmark requiring multi-turn reasoning over passages. We report:
+\begin{itemize}
+    \item \textbf{F1 Score}: Harmonic mean of precision and recall at word level, capturing partial correctness
+    \item \textbf{Memory}: Peak GPU memory usage in MB
+    \item \textbf{Compression Ratio}: FP16 memory / quantized memory
+\end{itemize}
+
+We use zero-shot evaluation (no task-specific fine-tuning) via lm-evaluation-harness \cite{eval2023harness} to measure intrinsic model capability under quantization.
+
+\subsubsection{Hardware Configuration}
+All experiments run on \textbf{NVIDIA A10G} (24GB VRAM) via Modal serverless platform, ensuring consistent thermal and memory conditions. We enable SDPA attention and TF32 precision for compute efficiency.
+
+\subsection{Ablation Design}
+
+We conduct controlled ablations varying one factor at a time (\Cref{tab:ablation_factors}), enabling isolation of each factor's effect.
+
+\begin{table}[h]
+\centering
+\caption{Ablation factors and values tested}
+\label{tab:ablation_factors}
+\begin{tabular}{lll}
+\toprule
+\textbf{Factor} & \textbf{Values} & \textbf{Hypothesis} \\
+\midrule
+Quant Format & NF4, FP4 & NF4 better for normal weights \\
+Double Quant & True, False & Free compression expected \\
+Compute Dtype & FP16, BF16 & Similar accuracy expected \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Implementation}
+
+Our codebase follows modular design: \texttt{config.py} centralizes hyperparameters, \texttt{quantize.py} handles model loading, \texttt{evaluate.py} wraps lm-eval, and \texttt{modal\_app.py} orchestrates cloud execution. This separation enables independent testing and easy configuration changes.

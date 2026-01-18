@@ -1,0 +1,29 @@
+% ============================================================================
+% DISCUSSION
+% ============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Interpretation of Format Differences}
+
+The substantial performance gap between NF4 and FP4 (9.5 percentage points) warrants theoretical consideration. Neural network weights typically exhibit zero-centered, approximately Gaussian distributions \cite{nagel2021white, dettmers2023qlora}. NF4's non-uniform quantization levels, derived from the quantiles of a standard normal distribution, concentrate representational capacity near zero where weights are most dense. In contrast, FP4's uniform spacing allocates equal capacity across the value range, effectively under-representing the high-density region near zero while over-representing sparse tail regions.
+
+This finding suggests that quantization format selection warrants attention comparable to bit-width selection in deployment decisions. Selecting FP4 over NF4 at 4-bit precision yields accuracy degradation equivalent to what might be expected from substantially more aggressive bit reduction.
+
+\subsection{Practical Implications}
+
+Based on our experimental findings, we offer the following recommendations for deploying Llama 3.2-1B in memory-constrained environments:
+
+\begin{enumerate}
+    \item Employ NF4 quantization format for 4-bit inference
+    \item Enable double quantization to maximize compression
+    \item Either float16 or bfloat16 compute dtype may be used based on hardware support
+\end{enumerate}
+
+\subsection{Limitations}
+
+Several limitations constrain the generalizability of these findings. First, our experiments focus on a single model architecture (Llama 3.2-1B); different architectures or model scales may exhibit different quantization sensitivity \cite{zhu2023survey}. Second, CoQA represents one task type; other tasks such as summarization or code generation may show different accuracy-compression trade-offs. Third, our ablation experiments evaluate 50 samples for computational efficiency; production deployment decisions should be validated on larger evaluation sets. Finally, we examine only post-training quantization; quantization-aware training approaches \cite{jacob2018quantization} may achieve superior results at equivalent compression ratios.
+
+\subsection{Future Directions}
+
+Several extensions merit investigation. Calibration-based quantization methods such as GPTQ \cite{frantar2022gptq} and AWQ \cite{lin2023awq} may provide different accuracy-compression trade-offs than the calibration-free approach examined here. Mixed-precision quantization, assigning different bit-widths to layers based on sensitivity analysis \cite{xiao2023smoothquant}, offers another promising direction. Additionally, examining how these findings scale to larger models (7B, 13B parameters) would inform deployment decisions across the model size spectrum.
