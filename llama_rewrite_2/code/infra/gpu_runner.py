@@ -145,7 +145,7 @@ class ComparisonRunner:
     and provides summary statistics.
     """
     
-    DEFAULT_EXPERIMENTS = ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4"]
+    DEFAULT_EXPERIMENTS = ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4", "bnb_8bit"]
     
     def __init__(self, hf_cache_dir: str = "/cache/huggingface"):
         self.runner = ExperimentRunner(hf_cache_dir)

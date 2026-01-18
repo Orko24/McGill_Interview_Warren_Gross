@@ -184,6 +184,7 @@ def main(
     if all_experiments:
         experiments = [
             "fp16_baseline",
+            "bnb_8bit",
             "bnb_4bit_nf4",
             "bnb_4bit_fp4",
             "bnb_4bit_nf4_no_double",
