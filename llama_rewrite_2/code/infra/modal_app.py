@@ -18,9 +18,20 @@ import json
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 import modal
+
+# GPU-side imports (only available in Modal cloud environment)
+# Uses TYPE_CHECKING for IDE support, actual import at runtime in cloud
+if TYPE_CHECKING:
+    from infra.gpu_runner import ExperimentRunner, ExperimentRequest, ComparisonRunner
+
+try:
+    from infra.gpu_runner import ExperimentRunner, ExperimentRequest, ComparisonRunner
+    GPU_IMPORTS_AVAILABLE = True
+except ImportError:
+    GPU_IMPORTS_AVAILABLE = False
 
 
 # =============================================================================
@@ -122,14 +133,7 @@ class ResultsManager:
     volumes={CONFIG.cache_dir: volume},
 )
 def run_single_experiment(experiment_name: str, limit: Optional[int] = None) -> dict:
-    """
-    Run single experiment on GPU.
-    
-    Imports gpu_runner here because it requires torch/llama_quant
-    which are only available in the Modal cloud environment.
-    """
-    from infra.gpu_runner import ExperimentRunner, ExperimentRequest
-    
+    """Run single experiment on GPU."""
     runner = ExperimentRunner(CONFIG.hf_cache_dir)
     request = ExperimentRequest(name=experiment_name, limit=limit)
     result = runner.run(request)
@@ -146,14 +150,7 @@ def run_single_experiment(experiment_name: str, limit: Optional[int] = None) -> 
     volumes={CONFIG.cache_dir: volume},
 )
 def run_comparison(experiments: Optional[List[str]] = None, limit: int = 100) -> dict:
-    """
-    Run comparison across multiple experiments on GPU.
-    
-    Imports gpu_runner here because it requires torch/llama_quant
-    which are only available in the Modal cloud environment.
-    """
-    from infra.gpu_runner import ComparisonRunner
-    
+    """Run comparison across multiple experiments on GPU."""
     runner = ComparisonRunner(CONFIG.hf_cache_dir)
     results = runner.run(experiments, limit)
     
