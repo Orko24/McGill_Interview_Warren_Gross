@@ -75,3 +75,5 @@ def log_memory_stats() -> None:
                 f"Reserved: {stats['reserved_mb']:.2f} MB, "
                 f"Peak: {stats['peak_mb']:.2f} MB")
 
+
+
