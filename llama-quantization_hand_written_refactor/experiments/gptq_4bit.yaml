@@ -1,0 +1,37 @@
+# GPTQ 4-bit Configuration
+# Post-training quantization with calibration
+
+name: gptq_4bit_g128
+description: "GPTQ 4-bit with group size 128"
+output_dir: ./results
+seed: 42
+
+quantization:
+  method: gptq
+  gptq_bits: 4
+  gptq_group_size: 128
+  gptq_desc_act: false
+  gptq_sym: true
+  gptq_damp_percent: 0.1
+
+model:
+  model_id: meta-llama/Llama-3.2-1B
+  torch_dtype: float16
+  attn_implementation: sdpa
+  calibration_dataset: c4
+  calibration_samples: 128
+  calibration_seq_length: 2048
+
+eval:
+  tasks:
+    - coqa
+  num_fewshot: 0
+  batch_size: auto
+  limit: null
+
+benchmark:
+  warmup_runs: 5
+  benchmark_runs: 20
+  input_lengths: [128, 256, 512, 1024]
+  batch_sizes: [1, 4, 8, 16]
+

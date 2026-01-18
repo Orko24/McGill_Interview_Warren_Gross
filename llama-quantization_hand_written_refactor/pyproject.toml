@@ -1,0 +1,115 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llama-quant"
+version = "0.1.0"
+description = "Quantization framework for Llama 3.2-1B with CoQA evaluation"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Hemanto Bairagi", email = "hemanto@example.com"}
+]
+keywords = ["llm", "quantization", "llama", "bitsandbytes", "gptq", "awq"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "torch>=2.1.0",
+    "transformers>=4.36.0",
+    "accelerate>=0.25.0",
+    "datasets>=2.16.0",
+    "bitsandbytes>=0.41.0",
+    "optimum>=1.15.0",
+    "lm-eval>=0.4.0",
+    "tqdm>=4.66.0",
+    "numpy>=1.24.0",
+    "pyyaml>=6.0",
+    "huggingface-hub>=0.20.0",
+    "safetensors>=0.4.0",
+    "sentencepiece>=0.1.99",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+viz = [
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "pandas>=2.0.0",
+]
+cloud = [
+    "modal>=0.56.0",
+]
+all = [
+    "llama-quant[dev,viz,cloud]",
+]
+
+[project.scripts]
+llama-quant = "cli.main:main"
+
+[project.urls]
+Homepage = "https://github.com/hemanto/llama-quantization"
+Documentation = "https://github.com/hemanto/llama-quantization#readme"
+Repository = "https://github.com/hemanto/llama-quantization"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.yml"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.venv
+    | build
+    | dist
+    | __pycache__
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"

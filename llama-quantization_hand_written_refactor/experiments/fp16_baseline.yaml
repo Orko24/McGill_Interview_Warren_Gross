@@ -1,0 +1,29 @@
+# FP16 Baseline Configuration
+# No quantization - serves as accuracy reference
+
+name: fp16_baseline
+description: "FP16 baseline without quantization"
+output_dir: ./results
+seed: 42
+
+quantization:
+  method: none
+
+model:
+  model_id: meta-llama/Llama-3.2-1B
+  torch_dtype: float16
+  attn_implementation: sdpa
+
+eval:
+  tasks:
+    - coqa
+  num_fewshot: 0
+  batch_size: auto
+  limit: null  # Full evaluation
+
+benchmark:
+  warmup_runs: 5
+  benchmark_runs: 20
+  input_lengths: [128, 256, 512, 1024]
+  batch_sizes: [1, 4, 8]
+

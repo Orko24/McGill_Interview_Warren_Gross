@@ -1,0 +1,32 @@
+# BitsAndBytes 4-bit NF4 Configuration
+# Recommended: Best accuracy-compression tradeoff
+
+name: bnb_4bit_nf4
+description: "BitsAndBytes 4-bit with NF4 and double quantization"
+output_dir: ./results
+seed: 42
+
+quantization:
+  method: bnb_4bit
+  bnb_4bit_compute_dtype: float16
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true
+
+model:
+  model_id: meta-llama/Llama-3.2-1B
+  torch_dtype: float16
+  attn_implementation: sdpa
+
+eval:
+  tasks:
+    - coqa
+  num_fewshot: 0
+  batch_size: auto
+  limit: null
+
+benchmark:
+  warmup_runs: 5
+  benchmark_runs: 20
+  input_lengths: [128, 256, 512, 1024]
+  batch_sizes: [1, 4, 8, 16]  # Can use larger batches with 4-bit
+

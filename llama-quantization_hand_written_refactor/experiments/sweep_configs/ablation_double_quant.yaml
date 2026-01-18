@@ -1,0 +1,21 @@
+# Ablation: Double Quantization Effect
+# Compare NF4 with and without double quantization
+
+name: ablation_double_quant
+description: "Ablation study: effect of double quantization"
+
+experiments:
+  - name: bnb_4bit_nf4_double
+    quantization:
+      method: bnb_4bit
+      bnb_4bit_quant_type: nf4
+      bnb_4bit_use_double_quant: true
+    
+  - name: bnb_4bit_nf4_no_double
+    quantization:
+      method: bnb_4bit
+      bnb_4bit_quant_type: nf4
+      bnb_4bit_use_double_quant: false
+
+# Expected result: Double quant saves ~0.4 bits/param with minimal accuracy loss
+
