@@ -1,0 +1,13 @@
+\section{Introduction}
+
+This report evaluates BitsAndBytes 4-bit quantization on the Llama 3.2-1B model, comparing two quantization schemes: NormalFloat4 (NF4), a data type optimized for normally distributed data~\cite{dettmers2023qlora}, and FP4, standard 4-bit floating point with uniform quantization levels. These methods are evaluated on the CoQA benchmark~\cite{reddy2019coqa}, which tests conversational question answering requiring dialogue history understanding and free-form answer generation.
+
+FP8 could not be tested because BitsAndBytes 8-bit quantization (LLM.int8()~\cite{dettmers2022llmint8}) encounters a CUDA kernel bug on both A10G and A100 GPUs, which remains an unresolved upstream issue in the bitsandbytes library.
+
+\subsection{Key Findings}
+
+Experiments on CoQA reveal three key findings. First, NF4 quantization achieves F1=0.676, matching or slightly exceeding the FP16 baseline (F1=0.625) while reducing model size by 59\%. This aligns with theoretical predictions: Dettmers et al.~\cite{dettmers2023qlora} show NF4 is information-theoretically optimal for normally distributed weights, and Askari-Hemmat et al.~\cite{askari2022injected} demonstrate that quantization noise can act as implicit regularization. Recent work also suggests low-bit quantization may favor undertrained models~\cite{ouyang2025lowbit}.
+
+Second, FP4 quantization significantly underperforms (F1=0.587), lagging NF4 by 9 percentage points despite identical compression ratios. This gap is explained by Lloyd-Max quantizer theory~\cite{lloyd1982least, max1960quantizing}: uniform quantization schemes like FP4 are suboptimal for bell-curve weight distributions typical of neural networks. Non-uniform quantization has been shown to outperform uniform schemes at low bit-widths~\cite{li2019apot}.
+
+Third, 8-bit quantization could not be evaluated due to a CUDA kernel bug in BitsAndBytes affecting A10G and A100 GPUs.

@@ -1,0 +1,4 @@
+\begin{abstract}
+This study evaluates 4-bit quantization on Llama 3.2-1B using CoQA. NF4 quantization achieves F1=0.676, comparable to or exceeding the FP16 baseline (F1=0.625), while reducing model size by 59\%. This aligns with Dettmers et al.~\cite{dettmers2023qlora}, who show NF4 is information-theoretically optimal for normally distributed weights. The slight improvement may reflect quantization's regularization effect~\cite{askari2022injected}, which can reduce overfitting. FP4 quantization (F1=0.587) significantly underperforms, consistent with Lloyd-Max quantizer theory: uniform quantization is suboptimal for non-uniform (Gaussian) weight distributions.
+\end{abstract}
+

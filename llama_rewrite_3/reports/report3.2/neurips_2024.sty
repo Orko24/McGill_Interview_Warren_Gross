@@ -1,0 +1,43 @@
+% NeurIPS 2024 Style (Simplified)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{neurips_2024}[2024/01/01 NeurIPS 2024 Style]
+
+% Page layout - NeurIPS uses specific margins
+\RequirePackage[
+  textwidth=5.5in,
+  textheight=9in,
+  top=1in,
+  headheight=0pt,
+  headsep=0pt,
+  footskip=0.5in
+]{geometry}
+
+% Typography
+\RequirePackage{times}
+\RequirePackage{microtype}
+
+% Section formatting
+\RequirePackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\section}{0pt}{2ex plus 1ex minus 0.5ex}{1ex plus 0.5ex}
+\titlespacing*{\subsection}{0pt}{1.5ex plus 0.5ex minus 0.3ex}{0.5ex plus 0.3ex}
+
+% Paragraph formatting
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% Title formatting
+\RequirePackage{authblk}
+
+% Abstract
+\renewenvironment{abstract}{%
+  \centerline{\large\bfseries Abstract}%
+  \vspace{0.5ex}%
+  \begin{quote}%
+}{%
+  \end{quote}%
+  \vspace{1ex}%
+}
+
+\endinput

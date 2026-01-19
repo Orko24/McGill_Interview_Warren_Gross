@@ -1,0 +1,72 @@
+\documentclass[10pt,twocolumn]{article}
+
+% Conference-style margins (similar to ACL/EMNLP)
+\usepackage[
+  letterpaper,
+  margin=1in,
+  columnsep=0.25in
+]{geometry}
+
+% Typography (Times font - standard for conferences)
+\usepackage{times}
+\usepackage{microtype}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage[numbers]{natbib}
+\usepackage{caption}
+
+% Section formatting
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\section}{0pt}{2ex plus 1ex minus 0.5ex}{1ex plus 0.3ex}
+\titlespacing*{\subsection}{0pt}{1.5ex plus 0.5ex minus 0.3ex}{0.5ex plus 0.2ex}
+
+% Compact spacing
+\setlength{\parskip}{0.3em}
+\setlength{\parindent}{0em}
+\captionsetup{font=small,skip=5pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+
+% Graphics path
+\graphicspath{{figures/}}
+
+% Prevent awkward vertical spacing
+\raggedbottom
+
+% Title
+\title{\Large\textbf{Evaluating 4-bit Quantization Methods for\\Llama 3.2-1B on Conversational Question Answering}}
+\author{
+  \textbf{Hemanto Bairagi}\\
+  McGill University\\
+  \texttt{hemanto.bairagi@alumni.ucalgary.ca}
+}
+\date{NeurIPS 2024 Workshop Submission}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/abstract}
+\input{sections/introduction}
+\input{sections/experimental_setup}
+\input{sections/results}
+\input{sections/analysis}
+\input{sections/limitations}
+\input{sections/conclusion}
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

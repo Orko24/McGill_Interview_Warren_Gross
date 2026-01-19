@@ -5,7 +5,7 @@ A systematic evaluation of quantization methods for Llama 3.2-1B on the CoQA con
 ## Project Structure
 
 ```
-llama_rewrite_2/
+llama_rewrite_3/
 ├── code/                      # Source code
 │   ├── infra/                 # Infrastructure (Modal deployment)
 │   │   └── modal_app.py       # GPU runner for experiments
@@ -48,7 +48,7 @@ llama_rewrite_2/
 ### Run Experiments
 
 ```bash
-cd llama_rewrite_2
+cd llama_rewrite_3
 
 # Quick comparison (FP16 vs NF4 vs FP4)
 modal run code/infra/modal_app.py --limit 50
@@ -81,9 +81,9 @@ make clean  # Remove build artifacts
 
 | Method | F1 Score | Model Size | Compression |
 |--------|----------|------------|-------------|
-| FP16 (baseline) | 0.6418 | 2357 MB | 1.0x |
-| BnB 4-bit NF4 | **0.6758** | 965 MB | **2.4x** |
-| BnB 4-bit FP4 | 0.5807 | 965 MB | 2.4x |
+| FP16 (baseline) | 0.625 | 2357 MB | 1.0x |
+| BnB 4-bit NF4 | **0.676** | 965 MB | **2.4x** |
+| BnB 4-bit FP4 | 0.587 | 965 MB | 2.4x |
 
 **Key Finding**: NF4 quantization achieves comparable (or better) accuracy to FP16 with 2.4x memory reduction.
 
@@ -96,5 +96,11 @@ Start with the `design_report/` folder:
 
 ## Author
 
-Hemanto Bairagi
+Hemanto Bairagi  
+McGill University  
+hemanto.bairagi@alumni.ucalgary.ca
+
+## Repository
+
+https://github.com/Orko24/McGill_Interview_Warren_Gross/tree/main/llama_rewrite_3
 
