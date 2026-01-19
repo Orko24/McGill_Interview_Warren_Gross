@@ -2,7 +2,7 @@
 
 This report evaluates BitsAndBytes 4-bit quantization on the Llama 3.2-1B model, comparing two quantization schemes: NormalFloat4 (NF4), a data type optimized for normally distributed data~\cite{dettmers2023qlora}, and FP4, standard 4-bit floating point with uniform quantization levels. These methods are evaluated on the CoQA benchmark~\cite{reddy2019coqa}, which tests conversational question answering requiring dialogue history understanding and free-form answer generation.
 
-FP8 could not be tested because BitsAndBytes 8-bit quantization (LLM.int8()~\cite{dettmers2022llmint8}) encounters a CUDA kernel bug on both A10G and A100 GPUs---an unresolved upstream issue in the bitsandbytes library.
+FP8 could not be tested because BitsAndBytes 8-bit quantization (LLM.int8()~\cite{dettmers2022llmint8}) encounters a CUDA kernel bug on both A10G and A100 GPUs, which remains an unresolved upstream issue in the bitsandbytes library.
 
 \subsection{Key Findings}
 

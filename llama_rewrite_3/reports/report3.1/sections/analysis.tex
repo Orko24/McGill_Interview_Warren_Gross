@@ -2,13 +2,13 @@
 
 \subsection{Why Does NF4 Outperform FP16?}
 
-The improvement of NF4 over FP16 is unexpected. Three contributing factors are hypothesized: (1) \textit{Regularization effect}---quantization noise acts as weight perturbation during inference, similar to dropout, which may improve generalization~\cite{askari2022injected, zhang2020sqwa}. (2) \textit{Information-theoretic optimality}---NF4 quantization levels are placed at normal distribution quantiles, minimizing expected reconstruction error for weights following this distribution~\cite{dettmers2023qlora}. (3) \textit{Reduced overfitting}---the FP16 model may be slightly overfit, and quantization effectively reduces model capacity; recent work shows low-bit quantization can favor undertrained models~\cite{ouyang2025lowbit}.
+The improvement of NF4 over FP16 is unexpected. Three contributing factors are hypothesized. First, quantization noise acts as weight perturbation during inference, similar to dropout, which may improve generalization through a regularization effect~\cite{askari2022injected, zhang2020sqwa}. Second, NF4 quantization levels are placed at normal distribution quantiles, minimizing expected reconstruction error for weights following this distribution, achieving information-theoretic optimality~\cite{dettmers2023qlora}. Third, the FP16 model may be slightly overfit, and quantization effectively reduces model capacity; recent work shows low-bit quantization can favor undertrained models~\cite{ouyang2025lowbit}.
 
 \subsection{Why Does FP4 Underperform?}
 
 FP4 uses uniformly spaced quantization levels, which are suboptimal for normally distributed data according to Lloyd-Max quantizer theory~\cite{lloyd1982least, max1960quantizing}. Most weights cluster near zero, but FP4 allocates equal representation capacity across the entire range, wasting bits on rare large values while providing insufficient precision for the dense center. Non-uniform quantization schemes like APoT~\cite{li2019apot} have demonstrated superior performance over uniform quantization at equivalent bit-widths.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig3_nf4_vs_fp4.pdf}
 \caption{NF4 vs FP4: identical compression (2.44$\times$) but NF4 outperforms FP4 by 15.2\% in F1.}
@@ -17,14 +17,14 @@ FP4 uses uniformly spaced quantization levels, which are suboptimal for normally
 
 \subsection{Memory-Accuracy Trade-off}
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig1_accuracy_vs_memory.pdf}
 \caption{Accuracy vs memory trade-off. NF4 achieves the Pareto optimal point.}
 \label{fig:accuracy_memory}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig5_memory_waterfall.pdf}
 \caption{Memory reduction through 4-bit quantization: 59\% reduction (1392 MB savings).}

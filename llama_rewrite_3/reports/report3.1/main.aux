@@ -13,50 +13,40 @@
 \citation{lloyd1982least,max1960quantizing}
 \citation{li2019apot}
 \citation{meta2024llama32}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Key Findings}{1}{subsection.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{1}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Model}{1}{subsection.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Quantization Configurations}{1}{subsection.2.2}\protected@file@percent }
 \citation{gao2023framework}
 \citation{reddy2019coqa}
 \citation{reddy2019coqa}
 \citation{askari2022injected}
 \citation{lloyd1982least}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Model loading and quantization pipeline. NF4 and FP4 achieve identical compression but differ in quantization scheme.}}{2}{figure.caption.1}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:setup_model}{{1}{2}{Model loading and quantization pipeline. NF4 and FP4 achieve identical compression but differ in quantization scheme}{figure.caption.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Evaluation Protocol}{2}{subsection.2.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Evaluation pipeline using lm-evaluation-harness.}}{2}{figure.caption.2}\protected@file@percent }
-\newlabel{fig:setup_eval}{{2}{2}{Evaluation pipeline using lm-evaluation-harness}{figure.caption.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Infrastructure}{2}{subsection.2.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Serverless GPU infrastructure on Modal Cloud.}}{2}{figure.caption.3}\protected@file@percent }
-\newlabel{fig:setup_infra}{{3}{2}{Serverless GPU infrastructure on Modal Cloud}{figure.caption.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Results}{2}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Accuracy Results}{2}{subsection.3.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces CoQA~\cite  {reddy2019coqa} accuracy and model size by quantization method.}}{2}{table.caption.4}\protected@file@percent }
-\newlabel{tab:accuracy}{{1}{2}{CoQA~\cite {reddy2019coqa} accuracy and model size by quantization method}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Key Findings}{1}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Model}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Quantization Configurations}{1}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Evaluation Protocol}{1}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Infrastructure}{1}{subsection.2.4}\protected@file@percent }
 \citation{leviathan2023speculative}
 \citation{askari2022injected,zhang2020sqwa}
 \citation{dettmers2023qlora}
 \citation{ouyang2025lowbit}
 \citation{lloyd1982least,max1960quantizing}
 \citation{li2019apot}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces CoQA F1 scores by quantization method.}}{3}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:bar_comparison}{{4}{3}{CoQA F1 scores by quantization method}{figure.caption.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Latency Results}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Latency by quantization method.}}{3}{table.caption.6}\protected@file@percent }
-\newlabel{tab:latency}{{2}{3}{Latency by quantization method}{table.caption.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Throughput Results}{3}{subsection.3.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Throughput by batch size.}}{3}{table.caption.7}\protected@file@percent }
-\newlabel{tab:throughput}{{3}{3}{Throughput by batch size}{table.caption.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Inference throughput by batch size.}}{3}{figure.caption.8}\protected@file@percent }
-\newlabel{fig:throughput}{{5}{3}{Inference throughput by batch size}{figure.caption.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Analysis}{3}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Why Does NF4 Outperform FP16?}{3}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Why Does FP4 Underperform?}{3}{subsection.4.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces NF4 vs FP4: identical compression (2.44$\times $) but NF4 outperforms FP4 by 15.2\% in F1.}}{3}{figure.caption.9}\protected@file@percent }
-\newlabel{fig:nf4_vs_fp4}{{6}{3}{NF4 vs FP4: identical compression (2.44$\times $) but NF4 outperforms FP4 by 15.2\% in F1}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Model loading and quantization pipeline. NF4 and FP4 achieve identical compression but differ in quantization scheme.}}{2}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:setup_model}{{1}{2}{Model loading and quantization pipeline. NF4 and FP4 achieve identical compression but differ in quantization scheme}{figure.caption.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Evaluation pipeline using lm-evaluation-harness.}}{2}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:setup_eval}{{2}{2}{Evaluation pipeline using lm-evaluation-harness}{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Results}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Accuracy Results}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Latency Results}{2}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Serverless GPU infrastructure on Modal Cloud.}}{2}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:setup_infra}{{3}{2}{Serverless GPU infrastructure on Modal Cloud}{figure.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces CoQA~\cite  {reddy2019coqa} accuracy and model size by quantization method.}}{2}{table.caption.4}\protected@file@percent }
+\newlabel{tab:accuracy}{{1}{2}{CoQA~\cite {reddy2019coqa} accuracy and model size by quantization method}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Throughput Results}{2}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Analysis}{2}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Why Does NF4 Outperform FP16?}{2}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Why Does FP4 Underperform?}{2}{subsection.4.2}\protected@file@percent }
 \citation{dettmers2022llmint8}
 \citation{frantar2023gptq}
 \citation{lin2024awq}
@@ -74,13 +64,23 @@
 \citation{hendrycks2021mmlu}
 \citation{frantar2023gptq}
 \citation{lin2024awq}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Memory-Accuracy Trade-off}{4}{subsection.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces CoQA F1 scores by quantization method.}}{3}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:bar_comparison}{{4}{3}{CoQA F1 scores by quantization method}{figure.caption.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Latency by quantization method.}}{3}{table.caption.6}\protected@file@percent }
+\newlabel{tab:latency}{{2}{3}{Latency by quantization method}{table.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Memory-Accuracy Trade-off}{3}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Limitations}{3}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{3}{section.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Throughput by batch size.}}{3}{table.caption.7}\protected@file@percent }
+\newlabel{tab:throughput}{{3}{3}{Throughput by batch size}{table.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Inference throughput by batch size.}}{3}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:throughput}{{5}{3}{Inference throughput by batch size}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces NF4 vs FP4: identical compression (2.44$\times $) but NF4 outperforms FP4 by 15.2\% in F1.}}{4}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:nf4_vs_fp4}{{6}{4}{NF4 vs FP4: identical compression (2.44$\times $) but NF4 outperforms FP4 by 15.2\% in F1}{figure.caption.9}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Accuracy vs memory trade-off. NF4 achieves the Pareto optimal point.}}{4}{figure.caption.10}\protected@file@percent }
 \newlabel{fig:accuracy_memory}{{7}{4}{Accuracy vs memory trade-off. NF4 achieves the Pareto optimal point}{figure.caption.10}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Memory reduction through 4-bit quantization: 59\% reduction (1392 MB savings).}}{4}{figure.caption.11}\protected@file@percent }
 \newlabel{fig:memory_waterfall}{{8}{4}{Memory reduction through 4-bit quantization: 59\% reduction (1392 MB savings)}{figure.caption.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Limitations}{4}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{4}{section.6}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Key results: 2.44$\times $ compression, +8.2\% F1 over FP16, +15.2\% over FP4.}}{4}{figure.caption.12}\protected@file@percent }
 \newlabel{fig:summary}{{9}{4}{Key results: 2.44$\times $ compression, +8.2\% F1 over FP16, +15.2\% over FP4}{figure.caption.12}{}}
 \bibstyle{plainnat}

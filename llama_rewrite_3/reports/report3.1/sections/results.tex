@@ -2,14 +2,14 @@
 
 \subsection{Accuracy Results}
 
-\begin{table}[H]
+\begin{table}[t]
 \centering
 \small
 \begin{tabular}{lcccc}
 \toprule
 Configuration & F1 & EM & Size (MB) & Reduction \\
 \midrule
-FP16 Baseline & 0.625 & 0.487 & 2357 & --- \\
+FP16 Baseline & 0.625 & 0.487 & 2357 & -- \\
 BnB 4-bit NF4 & \textbf{0.676} & \textbf{0.529} & 965 & 59.1\% \\
 BnB 4-bit FP4 & 0.587 & 0.448 & 965 & 59.1\% \\
 \bottomrule
@@ -20,7 +20,7 @@ BnB 4-bit FP4 & 0.587 & 0.448 & 965 & 59.1\% \\
 
 NF4 outperforms the FP16 baseline by 5.1 F1 points, a counterintuitive result suggesting quantization noise acts as a regularizer~\cite{askari2022injected}. FP4 underperforms both NF4 and FP16 by a significant margin (8.9 F1 points below NF4), consistent with Lloyd-Max theory~\cite{lloyd1982least}. Both quantized models achieve identical size (965 MB).
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig2_bar_comparison.pdf}
 \caption{CoQA F1 scores by quantization method.}
@@ -29,7 +29,7 @@ NF4 outperforms the FP16 baseline by 5.1 F1 points, a counterintuitive result su
 
 \subsection{Latency Results}
 
-\begin{table}[H]
+\begin{table}[t]
 \centering
 \small
 \begin{tabular}{lccc}
@@ -45,11 +45,11 @@ BnB 4-bit FP4 & 18.5 ms & 61.8 ms & 24.1 ms/tok \\
 \label{tab:latency}
 \end{table}
 
-Quantized models exhibit higher latency due to dequantization overhead---4-bit weights must be dequantized to FP16 for matrix multiplications. Speculative decoding~\cite{leviathan2023speculative} could potentially offset this overhead in production settings.
+Quantized models exhibit higher latency due to dequantization overhead, as 4-bit weights must be dequantized to FP16 for matrix multiplications. Speculative decoding~\cite{leviathan2023speculative} could potentially offset this overhead in production settings.
 
 \subsection{Throughput Results}
 
-\begin{table}[H]
+\begin{table}[t]
 \centering
 \small
 \begin{tabular}{lccc}
@@ -67,7 +67,7 @@ BnB 4-bit FP4 & 41.5 tok/s & 143.1 tok/s & 239.2 tok/s \\
 
 Despite lower throughput, quantized models enable running larger batch sizes on memory-constrained hardware.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig4_throughput.pdf}
 \caption{Inference throughput by batch size.}
