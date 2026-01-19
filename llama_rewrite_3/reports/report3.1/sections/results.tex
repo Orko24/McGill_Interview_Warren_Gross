@@ -1,0 +1,75 @@
+\section{Results}
+
+\subsection{Accuracy Results}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Configuration & F1 & EM & Size (MB) & Reduction \\
+\midrule
+FP16 Baseline & 0.625 & 0.487 & 2357 & --- \\
+BnB 4-bit NF4 & \textbf{0.676} & \textbf{0.529} & 965 & 59.1\% \\
+BnB 4-bit FP4 & 0.587 & 0.448 & 965 & 59.1\% \\
+\bottomrule
+\end{tabular}
+\caption{CoQA~\cite{reddy2019coqa} accuracy and model size by quantization method.}
+\label{tab:accuracy}
+\end{table}
+
+NF4 outperforms the FP16 baseline by 5.1 F1 points, a counterintuitive result suggesting quantization noise acts as a regularizer~\cite{askari2022injected}. FP4 underperforms both NF4 and FP16 by a significant margin (8.9 F1 points below NF4), consistent with Lloyd-Max theory~\cite{lloyd1982least}. Both quantized models achieve identical size (965 MB).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{fig2_bar_comparison.pdf}
+\caption{CoQA F1 scores by quantization method.}
+\label{fig:bar_comparison}
+\end{figure}
+
+\subsection{Latency Results}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Configuration & Prefill 128 & Prefill 512 & Decode \\
+\midrule
+FP16 Baseline & 12.3 ms & 45.2 ms & 15.8 ms/tok \\
+BnB 4-bit NF4 & 18.7 ms & 62.1 ms & 24.3 ms/tok \\
+BnB 4-bit FP4 & 18.5 ms & 61.8 ms & 24.1 ms/tok \\
+\bottomrule
+\end{tabular}
+\caption{Latency by quantization method.}
+\label{tab:latency}
+\end{table}
+
+Quantized models exhibit higher latency due to dequantization overhead---4-bit weights must be dequantized to FP16 for matrix multiplications. Speculative decoding~\cite{leviathan2023speculative} could potentially offset this overhead in production settings.
+
+\subsection{Throughput Results}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Configuration & Batch=1 & Batch=4 & Batch=8 \\
+\midrule
+FP16 Baseline & 63.2 tok/s & 198.4 tok/s & 312.1 tok/s \\
+BnB 4-bit NF4 & 41.2 tok/s & 142.3 tok/s & 238.7 tok/s \\
+BnB 4-bit FP4 & 41.5 tok/s & 143.1 tok/s & 239.2 tok/s \\
+\bottomrule
+\end{tabular}
+\caption{Throughput by batch size.}
+\label{tab:throughput}
+\end{table}
+
+Despite lower throughput, quantized models enable running larger batch sizes on memory-constrained hardware.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{fig4_throughput.pdf}
+\caption{Inference throughput by batch size.}
+\label{fig:throughput}
+\end{figure}

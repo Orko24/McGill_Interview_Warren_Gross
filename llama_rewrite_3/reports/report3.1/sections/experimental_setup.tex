@@ -1,0 +1,39 @@
+\section{Experimental Setup}
+
+\subsection{Model}
+
+The model used is Llama 3.2-1B (\texttt{meta-llama/Llama-3.2-1B}), a 1B parameter decoder-only transformer from Meta's Llama 3.2 release~\cite{meta2024llama32}. The model uses an optimized transformer architecture with RoPE positional embeddings and SwiGLU activations.
+
+\subsection{Quantization Configurations}
+
+Three configurations are evaluated: FP16 baseline (16-bit, no quantization), BnB 4-bit NF4 (4-bit NormalFloat with double quantization, FP16 compute), and BnB 4-bit FP4 (4-bit floating point with double quantization, FP16 compute). All quantized configurations use a block size of 64 with double quantization enabled.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{setup_1_model.pdf}
+\caption{Model loading and quantization pipeline. NF4 and FP4 achieve identical compression but differ in quantization scheme.}
+\label{fig:setup_model}
+\end{figure}
+
+\subsection{Evaluation Protocol}
+
+The lm-evaluation-harness~\cite{gao2023framework} was used for standardized evaluation with CoQA in zero-shot mode, using automatic batch sizing and a sample limit of 50 examples.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{setup_3_eval.pdf}
+\caption{Evaluation pipeline using lm-evaluation-harness.}
+\label{fig:setup_eval}
+\end{figure}
+
+\subsection{Infrastructure}
+
+Experiments were conducted on Modal serverless infrastructure using NVIDIA A100-SXM4-40GB GPUs with CUDA 12.x. The software stack consisted of PyTorch 2.1+, Transformers 4.36+, and BitsAndBytes 0.43+. Model weights were cached using Modal Volumes.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{setup_2_infra.pdf}
+\caption{Serverless GPU infrastructure on Modal Cloud.}
+\label{fig:setup_infra}
+\end{figure}
+

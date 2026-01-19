@@ -1,0 +1,45 @@
+\documentclass[10pt,twocolumn]{article}
+
+% Packages
+\usepackage[margin=0.75in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage[numbers]{natbib}
+
+% Formatting
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1.5ex plus 0.5ex minus 0.2ex}{1ex plus 0.2ex}
+\titlespacing*{\subsection}{0pt}{1ex plus 0.3ex minus 0.2ex}{0.5ex plus 0.1ex}
+\setlength{\parskip}{0.3em}
+\setlength{\parindent}{0em}
+
+% Graphics path
+\graphicspath{{figures/}}
+
+\title{\textbf{Evaluating 4-bit Quantization Methods for Llama 3.2-1B on Conversational Question Answering}}
+\author{Hemanto Bairagi}
+\date{January 2026}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/abstract}
+\input{sections/introduction}
+\input{sections/experimental_setup}
+\input{sections/results}
+\input{sections/analysis}
+\input{sections/limitations}
+\input{sections/conclusion}
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
+

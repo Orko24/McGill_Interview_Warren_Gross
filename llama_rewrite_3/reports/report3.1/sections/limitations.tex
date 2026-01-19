@@ -1,0 +1,9 @@
+\section{Limitations}
+
+\textbf{BitsAndBytes 8-bit Bug.} 8-bit quantization (LLM.int8()~\cite{dettmers2022llmint8}) encounters a CUDA kernel bug (\texttt{invalid configuration argument at line 380 in ops.cu}) on A10G and A100 GPUs---an unresolved upstream issue.
+
+\textbf{GPTQ/AWQ Out of Scope.} GPTQ~\cite{frantar2023gptq} and AWQ~\cite{lin2024awq} require pre-quantized model files (unavailable for Llama 3.2-1B) or calibration datasets. BitsAndBytes quantizes on-the-fly, making it more suitable for rapid experimentation. Alternative compression techniques such as pruning~\cite{frantar2023sparsegpt} and distillation~\cite{hinton2015distilling} were also not evaluated.
+
+\textbf{Limited Sample Size.} Evaluation was performed on 50 CoQA~\cite{reddy2019coqa} samples rather than the full test set due to computational constraints.
+
+\textbf{Single Model.} Only Llama 3.2-1B~\cite{meta2024llama32} was evaluated. Results may not generalize to larger models like Llama 2~\cite{touvron2023llama2} or different architectures.

@@ -212,9 +212,19 @@ Future work should evaluate on larger models, additional benchmarks, and include
 
 ## References
 
-Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. *arXiv preprint arXiv:2305.14314*.
+### Primary Sources
+
+Askari-Hemmat, M. H., et al. (2022). QReg: On Regularization Effects of Quantization. *arXiv preprint arXiv:2206.12372*. https://arxiv.org/abs/2206.12372
+
+Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. *arXiv preprint arXiv:2305.14314*. https://arxiv.org/abs/2305.14314
+
+Gao, L., Tow, J., Abbasi, B., Biderman, S., et al. (2023). A framework for few-shot language model evaluation. *Zenodo*. https://github.com/EleutherAI/lm-evaluation-harness
 
 Meta. (2024). Llama 3.2-1B. *Hugging Face*. https://huggingface.co/meta-llama/Llama-3.2-1B
+
+Reddy, S., Chen, D., & Manning, C. D. (2019). CoQA: A Conversational Question Answering Challenge. *Transactions of the Association for Computational Linguistics*, 7, 249–266. https://aclanthology.org/Q19-1016/
+
+### Quantization Methods
 
 Dettmers, T., Lewis, M., Belkada, Y., & Zettlemoyer, L. (2022). LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale. *NeurIPS 2022*.
 
@@ -222,23 +232,37 @@ Frantar, E., Ashkboos, S., Hoefler, T., & Alistarh, D. (2023). GPTQ: Accurate Po
 
 Frantar, E., & Alistarh, D. (2023). SparseGPT: Massive Language Models Can Be Accurately Pruned in One-Shot. *ICML 2023*.
 
-Gao, L., Tow, J., Abbasi, B., Biderman, S., et al. (2023). A framework for few-shot language model evaluation. *Zenodo*.
+Lin, J., Tang, J., Tang, H., Yang, S., et al. (2024). AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration. *MLSys 2024*.
+
+### Information Theory / Quantization Theory
+
+Li, Y., Dong, X., & Wang, W. (2020). Additive Powers-of-Two Quantization: An Efficient Non-uniform Discretization for Neural Networks. *ICLR 2020*. https://arxiv.org/abs/1909.13144
+
+Lloyd, S. (1982). Least squares quantization in PCM. *IEEE Transactions on Information Theory*, 28(2), 129–137.
+
+Max, J. (1960). Quantizing for minimum distortion. *IRE Transactions on Information Theory*, 6(1), 7–12.
+
+Ouyang, S., et al. (2025). Low-Bit Quantization Favors Undertrained LLMs. *Proceedings of ACL 2025*. https://aclanthology.org/2025.acl-long.1555/
+
+Zhang, J., et al. (2020). SQWA: Stochastic Quantized Weight Averaging for Improving the Generalization Capability of Low-Precision Deep Neural Networks. *arXiv preprint arXiv:2002.00343*.
+
+### LLM Models
+
+Touvron, H., Martin, L., Stone, K., et al. (2023). Llama 2: Open Foundation and Fine-Tuned Chat Models. *arXiv preprint arXiv:2307.09288*.
+
+### Benchmarks
 
 Hendrycks, D., Burns, C., Basart, S., Zou, A., et al. (2021). Measuring Massive Multitask Language Understanding. *ICLR 2021*.
+
+Rajpurkar, P., Zhang, J., Lopyrev, K., & Liang, P. (2016). SQuAD: 100,000+ Questions for Machine Comprehension of Text. *EMNLP 2016*.
+
+Zellers, R., Holtzman, A., Bisk, Y., Farhadi, A., & Choi, Y. (2019). HellaSwag: Can a Machine Really Finish Your Sentence? *ACL 2019*.
+
+### Model Compression (Other)
 
 Hinton, G., Vinyals, O., & Dean, J. (2015). Distilling the Knowledge in a Neural Network. *arXiv preprint arXiv:1503.02531*.
 
 Leviathan, Y., Kalman, M., & Matias, Y. (2023). Fast Inference from Transformers via Speculative Decoding. *ICML 2023*.
-
-Lin, J., Tang, J., Tang, H., Yang, S., et al. (2024). AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration. *MLSys 2024*.
-
-Rajpurkar, P., Zhang, J., Lopyrev, K., & Liang, P. (2016). SQuAD: 100,000+ Questions for Machine Comprehension of Text. *EMNLP 2016*.
-
-Reddy, S., Chen, D., & Manning, C. D. (2019). CoQA: A Conversational Question Answering Challenge. *TACL 2019*.
-
-Touvron, H., Martin, L., Stone, K., et al. (2023). Llama 2: Open Foundation and Fine-Tuned Chat Models. *arXiv preprint arXiv:2307.09288*.
-
-Zellers, R., Holtzman, A., Bisk, Y., Farhadi, A., & Choi, Y. (2019). HellaSwag: Can a Machine Really Finish Your Sentence? *ACL 2019*.
 
 ---
 

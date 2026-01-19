@@ -1,0 +1,107 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{dettmers2023qlora}
+\citation{askari2022injected}
+\citation{dettmers2023qlora}
+\citation{reddy2019coqa}
+\citation{dettmers2022llmint8}
+\citation{dettmers2023qlora}
+\citation{askari2022injected}
+\citation{ouyang2025lowbit}
+\citation{lloyd1982least,max1960quantizing}
+\citation{li2019apot}
+\citation{meta2024llama32}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Key Findings}{1}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Model}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Quantization Configurations}{1}{subsection.2.2}\protected@file@percent }
+\citation{gao2023framework}
+\citation{reddy2019coqa}
+\citation{reddy2019coqa}
+\citation{askari2022injected}
+\citation{lloyd1982least}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Model loading and quantization pipeline. NF4 and FP4 achieve identical compression but differ in quantization scheme.}}{2}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:setup_model}{{1}{2}{Model loading and quantization pipeline. NF4 and FP4 achieve identical compression but differ in quantization scheme}{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Evaluation Protocol}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Evaluation pipeline using lm-evaluation-harness.}}{2}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:setup_eval}{{2}{2}{Evaluation pipeline using lm-evaluation-harness}{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Infrastructure}{2}{subsection.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Serverless GPU infrastructure on Modal Cloud.}}{2}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:setup_infra}{{3}{2}{Serverless GPU infrastructure on Modal Cloud}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Results}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Accuracy Results}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces CoQA~\cite  {reddy2019coqa} accuracy and model size by quantization method.}}{2}{table.caption.4}\protected@file@percent }
+\newlabel{tab:accuracy}{{1}{2}{CoQA~\cite {reddy2019coqa} accuracy and model size by quantization method}{table.caption.4}{}}
+\citation{leviathan2023speculative}
+\citation{askari2022injected,zhang2020sqwa}
+\citation{dettmers2023qlora}
+\citation{ouyang2025lowbit}
+\citation{lloyd1982least,max1960quantizing}
+\citation{li2019apot}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces CoQA F1 scores by quantization method.}}{3}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:bar_comparison}{{4}{3}{CoQA F1 scores by quantization method}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Latency Results}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Latency by quantization method.}}{3}{table.caption.6}\protected@file@percent }
+\newlabel{tab:latency}{{2}{3}{Latency by quantization method}{table.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Throughput Results}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Throughput by batch size.}}{3}{table.caption.7}\protected@file@percent }
+\newlabel{tab:throughput}{{3}{3}{Throughput by batch size}{table.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Inference throughput by batch size.}}{3}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:throughput}{{5}{3}{Inference throughput by batch size}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Analysis}{3}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Why Does NF4 Outperform FP16?}{3}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Why Does FP4 Underperform?}{3}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces NF4 vs FP4: identical compression (2.44$\times $) but NF4 outperforms FP4 by 15.2\% in F1.}}{3}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:nf4_vs_fp4}{{6}{3}{NF4 vs FP4: identical compression (2.44$\times $) but NF4 outperforms FP4 by 15.2\% in F1}{figure.caption.9}{}}
+\citation{dettmers2022llmint8}
+\citation{frantar2023gptq}
+\citation{lin2024awq}
+\citation{frantar2023sparsegpt}
+\citation{hinton2015distilling}
+\citation{reddy2019coqa}
+\citation{meta2024llama32}
+\citation{touvron2023llama2}
+\citation{meta2024llama32}
+\citation{reddy2019coqa}
+\citation{dettmers2023qlora}
+\citation{askari2022injected}
+\citation{lloyd1982least}
+\citation{zellers2019hellaswag}
+\citation{hendrycks2021mmlu}
+\citation{frantar2023gptq}
+\citation{lin2024awq}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Memory-Accuracy Trade-off}{4}{subsection.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Accuracy vs memory trade-off. NF4 achieves the Pareto optimal point.}}{4}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:accuracy_memory}{{7}{4}{Accuracy vs memory trade-off. NF4 achieves the Pareto optimal point}{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Memory reduction through 4-bit quantization: 59\% reduction (1392 MB savings).}}{4}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:memory_waterfall}{{8}{4}{Memory reduction through 4-bit quantization: 59\% reduction (1392 MB savings)}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Limitations}{4}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{4}{section.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Key results: 2.44$\times $ compression, +8.2\% F1 over FP16, +15.2\% over FP4.}}{4}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:summary}{{9}{4}{Key results: 2.44$\times $ compression, +8.2\% F1 over FP16, +15.2\% over FP4}{figure.caption.12}{}}
+\bibstyle{plainnat}
+\bibdata{references}
+\bibcite{askari2022injected}{{1}{2022}{{Askari-Hemmat et~al.}}{{}}}
+\bibcite{dettmers2022llmint8}{{2}{2022}{{Dettmers et~al.}}{{Dettmers, Lewis, Belkada, and Zettlemoyer}}}
+\bibcite{dettmers2023qlora}{{3}{2023}{{Dettmers et~al.}}{{Dettmers, Pagnoni, Holtzman, and Zettlemoyer}}}
+\bibcite{frantar2023sparsegpt}{{4}{2023}{{Frantar and Alistarh}}{{}}}
+\bibcite{frantar2023gptq}{{5}{2023}{{Frantar et~al.}}{{Frantar, Ashkboos, Hoefler, and Alistarh}}}
+\bibcite{gao2023framework}{{6}{2023}{{Gao et~al.}}{{Gao, Tow, Abbasi, Biderman, et~al.}}}
+\bibcite{hendrycks2021mmlu}{{7}{2021}{{Hendrycks et~al.}}{{Hendrycks, Burns, Basart, Zou, et~al.}}}
+\bibcite{hinton2015distilling}{{8}{2015}{{Hinton et~al.}}{{Hinton, Vinyals, and Dean}}}
+\bibcite{leviathan2023speculative}{{9}{2023}{{Leviathan et~al.}}{{Leviathan, Kalman, and Matias}}}
+\bibcite{li2019apot}{{10}{2020}{{Li et~al.}}{{Li, Dong, and Wang}}}
+\bibcite{lin2024awq}{{11}{2024}{{Lin et~al.}}{{Lin, Tang, Tang, Yang, et~al.}}}
+\bibcite{lloyd1982least}{{12}{1982}{{Lloyd}}{{}}}
+\bibcite{max1960quantizing}{{13}{1960}{{Max}}{{}}}
+\bibcite{meta2024llama32}{{14}{2024}{{Meta}}{{}}}
+\bibcite{ouyang2025lowbit}{{15}{2025}{{Ouyang et~al.}}{{}}}
+\bibcite{reddy2019coqa}{{16}{2019}{{Reddy et~al.}}{{Reddy, Chen, and Manning}}}
+\bibcite{touvron2023llama2}{{17}{2023}{{Touvron et~al.}}{{Touvron, Martin, Stone, et~al.}}}
+\bibcite{zellers2019hellaswag}{{18}{2019}{{Zellers et~al.}}{{Zellers, Holtzman, Bisk, Farhadi, and Choi}}}
+\bibcite{zhang2020sqwa}{{19}{2020}{{Zhang et~al.}}{{}}}
+\gdef \@abspage@last{5}

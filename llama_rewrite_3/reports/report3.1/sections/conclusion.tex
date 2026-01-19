@@ -1,0 +1,14 @@
+\section{Conclusion}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{fig6_summary_metrics.pdf}
+\caption{Key results: 2.44$\times$ compression, +8.2\% F1 over FP16, +15.2\% over FP4.}
+\label{fig:summary}
+\end{figure}
+
+BitsAndBytes 4-bit quantization was evaluated on Llama 3.2-1B~\cite{meta2024llama32} using the CoQA benchmark~\cite{reddy2019coqa}. The key finding is that NF4 quantization~\cite{dettmers2023qlora} achieves higher F1 scores (0.676) than the FP16 baseline (0.625) while reducing model size by 59\%. This challenges the assumption that quantization necessarily degrades model quality, consistent with findings on quantization as regularization~\cite{askari2022injected}.
+
+The choice of quantization scheme matters significantly: FP4 underperforms both NF4 and FP16, demonstrating that naive uniform quantization is suboptimal for neural network weights~\cite{lloyd1982least}. Practitioners should prefer NF4 for 4-bit quantization of transformer models.
+
+Future work should evaluate on larger models, additional benchmarks such as HellaSwag~\cite{zellers2019hellaswag} and MMLU~\cite{hendrycks2021mmlu}, and include GPTQ~\cite{frantar2023gptq}/AWQ~\cite{lin2024awq} comparisons once pre-quantized Llama 3.2 models become available.
