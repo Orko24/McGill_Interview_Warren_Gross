@@ -1,0 +1,417 @@
+# Code Walkthrough - llama_rewrite_3 (Simplified)
+
+Date: January 18, 2026
+
+This is the simplified version with GPTQ/AWQ removed.
+
+---
+
+## STEP 0: THE COMMAND LINE
+
+You type:
+```bash
+cd /home/orko/Desktop/McGIll_interviews/llama_rewrite_3
+modal run code/infra/modal_app.py --limit 50
+```
+
+**What happens:**
+1. `modal` CLI parses the command
+2. Finds `modal_app.py`
+3. Looks for `@app.local_entrypoint()` decorator
+4. Calls that function
+
+---
+
+## STEP 1: LOCAL ENTRYPOINT (modal_app.py lines 165-217)
+
+```python
+@app.local_entrypoint()
+def main(
+    experiment: str = None,      # --experiment flag
+    all_experiments: bool = False,  # --all flag  
+    limit: int = 100,            # --limit flag
+):
+```
+
+This function runs **on YOUR machine** (not Modal cloud).
+
+**What it does:**
+1. Creates `ResultsManager` to save results locally
+2. Decides which remote function to call:
+   - `--experiment nf4` → `run_single_experiment.remote()`
+   - `--all` → `run_comparison.remote()` with all experiments
+   - (default) → `run_comparison.remote()` with default experiments
+
+```python
+# Line 206 - Default case (no flags)
+results = run_comparison.remote(limit=limit)
+```
+
+The `.remote()` sends the job to Modal cloud.
+
+---
+
+## STEP 2: MODAL SENDS TO CLOUD
+
+When you call `.remote()`:
+1. Modal spins up a GPU container in the cloud
+2. Installs all packages from the `image` definition
+3. Mounts your code
+4. Runs the function on an A100 GPU
+
+---
+
+## STEP 3: run_comparison() ON GPU (modal_app.py lines 149-163)
+
+```python
+@app.function(
+    image=image,
+    gpu=CONFIG.gpu_type,       # "A100"
+    timeout=CONFIG.timeout * 2,
+    secrets=[hf_secret],       # HuggingFace token
+    volumes={CONFIG.cache_dir: volume},
+)
+def run_comparison(experiments: Optional[List[str]] = None, limit: int = 100) -> dict:
+    """Run comparison across multiple experiments on GPU."""
+    runner = ComparisonRunner(CONFIG.hf_cache_dir)
+    results = runner.run(experiments, limit)
+    
+    volume.commit()
+    return {"experiments": [r.to_dict() for r in results]}
+```
+
+This runs **in Modal cloud** on the GPU.
+
+**What it does:**
+1. Creates `ComparisonRunner` (from gpu_runner.py)
+2. Calls `runner.run(experiments, limit)`
+3. Commits volume (saves cache)
+4. Returns results as JSON-serializable dict
+
+---
+
+## STEP 4: ComparisonRunner.run() (gpu_runner.py lines 139-183)
+
+```python
+class ComparisonRunner:
+    DEFAULT_EXPERIMENTS = ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4"]
+    
+    def run(self, experiments=None, limit=100):
+        if experiments is None:
+            experiments = self.DEFAULT_EXPERIMENTS
+        
+        results = []
+        for exp_name in experiments:
+            request = ExperimentRequest(name=exp_name, limit=limit)
+            result = self.runner.run(request)  # ExperimentRunner
+            results.append(result)
+        
+        return results
+```
+
+**What it does:**
+- Loops through experiments: ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4"]
+- For each one, calls `ExperimentRunner.run(request)`
+
+---
+
+## STEP 5: ExperimentRunner.run() (gpu_runner.py lines 56-130)
+
+```python
+class ExperimentRunner:
+    def run(self, request: ExperimentRequest) -> ExperimentResult:
+        # 1. Get config for this experiment
+        exp_config = get_experiment(request.name)
+        exp_config.eval.limit = request.limit
+        
+        # 2. Load model (THIS IS WHERE QUANTIZATION HAPPENS)
+        model, tokenizer = load_model(exp_config)
+        model_size = get_model_size_mb(model)
+        
+        # 3. Evaluate on CoQA
+        eval_results = evaluate_model(model, tokenizer, exp_config)
+        coqa_metrics = eval_results.get("coqa_metrics", {})
+        
+        # 4. Run benchmarks (latency, throughput)
+        benchmark_results = self.benchmark_suite.run(model, tokenizer)
+        
+        # 5. Return result object
+        return ExperimentResult(
+            name=request.name,
+            coqa_f1=coqa_metrics.get("coqa_f1"),
+            model_size_mb=model_size,
+            ...
+        )
+```
+
+---
+
+## STEP 6: load_model() (base.py lines 121-151)
+
+```python
+def load_model(config: ExperimentConfig):
+    method = config.quantization.method   # e.g., QuantMethod.BITSANDBYTES_4BIT
+    
+    tokenizer = load_tokenizer(config)
+    
+    loader = _get_loader(method)          # Factory picks the right loader
+    model = loader.load(config)           # ← QUANTIZATION HAPPENS HERE
+    
+    return model, tokenizer
+```
+
+---
+
+## STEP 7: _get_loader() Factory (base.py lines 115-128)
+
+```python
+def _get_loader(method: QuantMethod) -> ModelLoader:
+    from llama_quant.models.bnb import BitsAndBytes4BitLoader, BitsAndBytes8BitLoader
+    
+    loaders = {
+        QuantMethod.NONE: FP16Loader(),
+        QuantMethod.BITSANDBYTES_4BIT: BitsAndBytes4BitLoader(),
+        QuantMethod.BITSANDBYTES_8BIT: BitsAndBytes8BitLoader(),
+    }
+    
+    return loaders[method]
+```
+
+Based on `method`, returns the right loader class.
+
+---
+
+## STEP 8: The Actual Model Loading
+
+### FP16Loader.load() (base.py lines 100-112)
+```python
+def load(self, config):
+    model = AutoModelForCausalLM.from_pretrained(
+        "meta-llama/Llama-3.2-1B",
+        dtype=torch.float16,     # ← No quantization, full precision
+        device_map="auto",
+    )
+    return model
+```
+
+### BitsAndBytes4BitLoader.load() (bnb.py lines 34-58)
+```python
+def load(self, config):
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",   # or "fp4"
+        bnb_4bit_use_double_quant=True,
+    )
+    
+    model = AutoModelForCausalLM.from_pretrained(
+        "meta-llama/Llama-3.2-1B",
+        quantization_config=bnb_config,  # ← QUANTIZATION APPLIED HERE
+        device_map="auto",
+    )
+    return model
+```
+
+---
+
+## STEP 9: Evaluation (harness.py)
+
+```python
+def evaluate_model(model, tokenizer, config):
+    # Wrap model for lm-eval
+    lm = HFLM(pretrained=model, tokenizer=tokenizer)
+    
+    # Run CoQA benchmark
+    results = lm_eval.simple_evaluate(
+        model=lm,
+        tasks=["coqa"],
+        limit=config.eval.limit,
+    )
+    
+    return results
+```
+
+`lm-eval` downloads CoQA dataset from HuggingFace and runs evaluation.
+
+---
+
+## STEP 10: Results Return to Local
+
+1. `ExperimentRunner.run()` returns `ExperimentResult`
+2. `ComparisonRunner.run()` collects all results into list
+3. `run_comparison()` converts to dict and returns
+4. Modal sends dict back to your local machine
+5. `main()` saves to `results/results4.json`
+
+---
+
+## THE COMPLETE FLOW
+
+```
+modal_app.py (entry point)
+    │
+    └── run_comparison()
+            │
+            └── ComparisonRunner.run()
+                    │
+                    └── ExperimentRunner.run()
+                            │
+                            ├── load_model(config)
+                            │       │
+                            │       └── _get_loader(method)
+                            │               ├── FP16Loader
+                            │               └── BitsAndBytes4BitLoader
+                            │
+                            └── evaluate_model()
+                                    │
+                                    └── lm_eval.simple_evaluate(tasks=["coqa"])
+```
+
+---
+
+## HOW HUGGINGFACE MODELS ARE LOADED
+
+Both loaders use the same HuggingFace function: `AutoModelForCausalLM.from_pretrained()`
+
+The difference is what parameters they pass.
+
+---
+
+### FP16Loader (base.py lines 93-112)
+
+```python
+class FP16Loader(ModelLoader):
+    """Loader for FP16 baseline (no quantization)."""
+    
+    def load(self, config: ExperimentConfig) -> AutoModelForCausalLM:
+        
+        model = AutoModelForCausalLM.from_pretrained(
+            config.model.model_id,        # "meta-llama/Llama-3.2-1B"
+            revision=config.model.revision,
+            dtype=torch.float16,          # ← FP16 precision, NO quantization
+            device_map="auto",
+            trust_remote_code=True,
+            attn_implementation="sdpa",
+        )
+        
+        return model
+```
+
+**What happens:**
+1. Downloads weights from HuggingFace (if not cached)
+2. Loads weights in FP16 (16-bit floating point)
+3. No compression - full model size (~2.3 GB for Llama-3.2-1B)
+
+---
+
+### BitsAndBytes4BitLoader (bnb.py lines 24-58)
+
+```python
+class BitsAndBytes4BitLoader(ModelLoader):
+    """Loader for BitsAndBytes 4-bit quantization."""
+    
+    def load(self, config: ExperimentConfig) -> AutoModelForCausalLM:
+        
+        # Step 1: Create the quantization config
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,                    # ← Enable 4-bit quantization
+            bnb_4bit_compute_dtype=torch.float16, # Compute in FP16
+            bnb_4bit_quant_type="nf4",            # "nf4" or "fp4"
+            bnb_4bit_use_double_quant=True,       # Extra compression
+        )
+        
+        # Step 2: Load model WITH quantization applied
+        model = AutoModelForCausalLM.from_pretrained(
+            config.model.model_id,        # "meta-llama/Llama-3.2-1B"
+            revision=config.model.revision,
+            quantization_config=bnb_config,  # ← THIS is the key difference
+            device_map="auto",
+            trust_remote_code=True,
+            attn_implementation="sdpa",
+        )
+        
+        return model
+```
+
+**What happens:**
+1. Downloads weights from HuggingFace (if not cached)
+2. **Quantizes on-the-fly** as weights load into GPU
+3. Each weight goes from 16-bit → 4-bit
+4. Model size shrinks: ~2.3 GB → ~965 MB
+
+---
+
+## THE KEY DIFFERENCE
+
+| Loader | Parameter | Result |
+|--------|-----------|--------|
+| FP16Loader | `dtype=torch.float16` | Full precision, ~2.3 GB |
+| BitsAndBytes4BitLoader | `quantization_config=bnb_config` | 4-bit compressed, ~965 MB |
+
+Both use the **same** `from_pretrained()` function.
+The `quantization_config` parameter triggers the compression.
+
+---
+
+## WHERE DOES THE MODEL COME FROM?
+
+```python
+config.model.model_id = "meta-llama/Llama-3.2-1B"
+```
+
+This is a HuggingFace model ID. When you call `from_pretrained()`:
+
+1. HuggingFace checks if it's cached locally
+2. If not cached → downloads from https://huggingface.co/meta-llama/Llama-3.2-1B
+3. Weights are stored in `/cache/huggingface` (our Modal volume)
+4. Future runs use the cached weights (fast)
+
+---
+
+## EXPERIMENTS WE RUN
+
+```python
+# gpu_runner.py
+DEFAULT_EXPERIMENTS = ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4"]
+```
+
+| Experiment | Loader | Config |
+|------------|--------|--------|
+| fp16_baseline | FP16Loader | No quantization |
+| bnb_4bit_nf4 | BitsAndBytes4BitLoader | quant_type="nf4" |
+| bnb_4bit_fp4 | BitsAndBytes4BitLoader | quant_type="fp4" |
+
+---
+
+## RESULTS
+
+```
+fp16_baseline: F1=0.6248, Size=2357.13 MB
+bnb_4bit_nf4:  F1=0.6758, Size=965.13 MB  ← Best accuracy, 59% smaller
+bnb_4bit_fp4:  F1=0.5865, Size=965.13 MB
+```
+
+NF4 actually **improved** accuracy while reducing size by 59%.
+
+---
+
+## WHY NO GPTQ/AWQ?
+
+- GPTQ and AWQ require **pre-quantized models** or calibration datasets
+- BitsAndBytes quantizes **on-the-fly** from any FP16 model
+- For this assignment, BitsAndBytes is sufficient to demonstrate quantization trade-offs
+- GPTQ/AWQ mentioned as future work in report
+
+---
+
+## WHY NO 8-BIT?
+
+BitsAndBytes 8-bit (LLM.int8()) has a CUDA kernel bug:
+```
+Error invalid configuration argument at line 380 in file /src/csrc/ops.cu
+```
+Affects A10G and A100 GPUs. Upstream bitsandbytes issue.
+
+---
+
+## END OF WALKTHROUGH
+
