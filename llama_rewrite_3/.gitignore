@@ -1,0 +1,68 @@
+# =============================================================================
+# Git Ignore for Llama Quantization Project
+# =============================================================================
+
+# Environment
+.env
+*.env
+
+# Results - track experiment outputs
+# (JSON files in results/ are tracked for reproducibility)
+!results/
+!results/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Models (if accidentally downloaded locally)
+*.bin
+*.safetensors
+*.gguf
+*.ggml
+models/
+
+# HuggingFace cache (if somehow ends up here)
+.cache/
+huggingface/
+
+# Logs
+*.log
+logs/
+
+# Docker (local overrides)
+docker-compose.override.yml
+
+
+
+
+
+
+
+
+
+
+
+
+

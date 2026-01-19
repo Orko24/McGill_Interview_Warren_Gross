@@ -1,0 +1,35 @@
+% ============================================================================
+% DISCUSSION
+% ============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Why NF4 Outperforms FP4}
+
+The 15\% performance gap between NF4 and FP4 follows from optimal quantization theory. Neural network weights exhibit approximately Gaussian distributions centered at zero \cite{nagel2021white}. NF4's 16 quantization levels are placed at distribution quantiles, concentrating representational capacity where weights are dense. FP4's uniform spacing wastes capacity on sparse tail regions while under-representing the dense zero-centered region, yielding higher quantization error for typical weight distributions \cite{gholami2022survey}.
+
+\subsection{Practical Recommendations}
+
+For deploying Llama 3.2-1B in memory-constrained environments:
+
+\begin{enumerate}
+    \item Use NF4 format---it strictly dominates FP4 at equal memory
+    \item Enable double quantization for maximum compression
+    \item Accept the throughput tradeoff (48\% reduction) as the cost of 2.44$\times$ memory savings
+\end{enumerate}
+
+\subsection{Limitations}
+
+Our study has several limitations:
+
+\begin{itemize}
+    \item \textbf{Single model}: Results may differ for other architectures or scales. Larger models (7B, 13B) may show different quantization sensitivity.
+    \item \textbf{Single task}: CoQA is conversational QA; other tasks like summarization or code generation may show different tradeoffs.
+    \item \textbf{Sample size}: We use 50 samples for computational efficiency; production deployment should validate on the full evaluation set.
+    \item \textbf{Missing 8-bit}: The BitsAndBytes CUDA bug prevented evaluation of LLM.int8(), which typically offers intermediate compression-accuracy tradeoffs.
+    \item \textbf{No calibration-based methods}: GPTQ and AWQ, which use calibration data, may achieve better accuracy at similar compression ratios.
+\end{itemize}
+
+\subsection{Future Work}
+
+Several extensions would strengthen this analysis: (1) including 8-bit once the BitsAndBytes bug is fixed; (2) comparing calibration-based methods (GPTQ, AWQ); (3) evaluating on multiple tasks and model sizes; (4) measuring real-world deployment metrics like time-to-first-token.

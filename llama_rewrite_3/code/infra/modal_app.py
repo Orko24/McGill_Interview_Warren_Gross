@@ -64,15 +64,12 @@ image = (
     modal.Image.debian_slim(python_version="3.11")
     .apt_install("git")
     .pip_install(
-        # PyTorch with CUDA - let PyTorch handle CUDA libs (avoids version conflicts)
+        # PyTorch with CUDA - let PyTorch handle CUDA libs
         "torch>=2.1.0",
         "transformers>=4.36.0",
         "accelerate>=0.25.0",
         "datasets>=2.16.0",
-        "bitsandbytes>=0.43.0",  # Works better when PyTorch handles CUDA
-        "optimum>=1.15.0",
-        "auto-gptq>=0.7.0",      # GPTQ quantization support
-        "autoawq>=0.2.0",        # AWQ quantization support
+        "bitsandbytes>=0.43.0",
         "lm-eval>=0.4.0",
         "sentencepiece>=0.1.99",
         "safetensors>=0.4.0",

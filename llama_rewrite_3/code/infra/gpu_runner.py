@@ -146,14 +146,8 @@ class ComparisonRunner:
     """
     
     # Note: 8-bit excluded - bitsandbytes LLM.int8() has CUDA kernel bugs (ops.cu line 380)
-    # Affects all GPUs (A10G, A100) and all base images. Upstream issue.
-    DEFAULT_EXPERIMENTS = [
-        "fp16_baseline", 
-        "bnb_4bit_nf4", 
-        "bnb_4bit_fp4",
-        "gptq_4bit_g128",
-        "awq_4bit_g128",
-    ]
+    # GPTQ/AWQ excluded - require pre-quantized models, out of scope
+    DEFAULT_EXPERIMENTS = ["fp16_baseline", "bnb_4bit_nf4", "bnb_4bit_fp4"]
     
     def __init__(self, hf_cache_dir: str = "/cache/huggingface"):
         self.runner = ExperimentRunner(hf_cache_dir)

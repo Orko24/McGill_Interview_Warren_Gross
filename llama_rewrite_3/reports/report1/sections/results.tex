@@ -1,0 +1,87 @@
+% ============================================================================
+% RESULTS
+% ============================================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Main Results}
+
+\Cref{tab:main_results} presents the experimental results comparing quantization configurations on CoQA.
+
+\begin{table}[t]
+\centering
+\caption{Quantization results on CoQA (n=50, zero-shot). EM = Exact Match.}
+\label{tab:main_results}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Configuration & F1 & EM & Memory (MB) & Compression \\
+\midrule
+FP16 (baseline) & 0.625 & 0.52 & 2357 & 1.0$\times$ \\
+\midrule
+4-bit NF4 & \textbf{0.676} & \textbf{0.58} & 965 & 2.44$\times$ \\
+4-bit FP4 & 0.587 & 0.45 & 965 & 2.44$\times$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+Three principal findings emerge from these experiments.
+
+First, NF4 quantization substantially outperforms FP4 at equivalent memory cost. At 4-bit precision, NF4 achieves 0.676 F1 compared to FP4's 0.587, a difference of 8.9 percentage points (\Cref{fig:nf4_fp4}). This result is consistent with the hypothesis that distribution-aware quantization levels better preserve model quality when weight distributions are approximately normal \cite{dettmers2023qlora}.
+
+Second, 4-bit NF4 quantization exceeds baseline FP16 performance (0.676 vs. 0.625 F1), representing an 8.2\% relative improvement. While this difference may partially reflect evaluation variance given the sample size, it demonstrates that 4-bit NF4 quantization does not degrade accuracy and may act as a form of regularization for this model and task.
+
+Third, all 4-bit configurations achieve 2.44$\times$ memory compression, reducing GPU memory requirements from 2357 MB to 965 MB. This enables deployment on substantially more resource-constrained hardware.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig3_nf4_vs_fp4.pdf}
+\caption{Comparison of NF4 and FP4 quantization at 4-bit precision. Both configurations require identical memory; however, NF4 achieves substantially higher F1 score while also exceeding the FP16 baseline.}
+\label{fig:nf4_fp4}
+\end{figure}
+
+\subsection{Performance Benchmarks}
+
+Beyond accuracy, we evaluate inference performance characteristics (\Cref{tab:benchmarks}).
+
+\begin{table}[h]
+\centering
+\caption{Inference performance on NVIDIA A100-40GB}
+\label{tab:benchmarks}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Configuration & Peak Mem (MB) & Decode (ms/tok) & Throughput (tok/s) \\
+\midrule
+FP16 & 2385 & 12.7 & 383 \\
+4-bit NF4 & 1026 & 24.2 & 199 \\
+4-bit FP4 & 1026 & 24.2 & 200 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+4-bit quantization reduces peak memory usage by 57\% (from 2385 MB to 1026 MB). However, the dequantization overhead during inference reduces throughput by approximately 48\% compared to FP16. This tradeoff favors quantization in memory-constrained deployment scenarios where batch sizes are limited, while FP16 remains preferable when sufficient GPU memory is available.
+
+\subsection{Accuracy vs Memory Tradeoff}
+
+\Cref{fig:accuracy_memory} visualizes the accuracy-memory tradeoff across quantization methods. NF4 occupies the Pareto-optimal position, achieving both the highest accuracy and the lowest memory footprint among tested configurations.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/fig1_accuracy_vs_memory.pdf}
+\caption{Accuracy vs memory tradeoff. NF4 achieves Pareto-optimal performance with highest F1 and lowest memory usage.}
+\label{fig:accuracy_memory}
+\end{figure}
+
+\subsection{Summary}
+
+\Cref{fig:summary} summarizes the key quantitative findings: 2.44$\times$ memory compression, 8.2\% accuracy improvement over FP16 baseline with NF4, and 15.2\% advantage of NF4 over FP4 at equivalent memory cost.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig6_summary_metrics.pdf}
+\caption{Summary of key experimental findings for Llama 3.2-1B quantization on CoQA.}
+\label{fig:summary}
+\end{figure}

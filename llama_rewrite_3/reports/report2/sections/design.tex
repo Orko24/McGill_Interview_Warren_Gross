@@ -1,0 +1,55 @@
+% ============================================================================
+% DESIGN CHOICES
+% ============================================================================
+\section{Design Choices}
+\label{sec:design}
+
+\subsection{Infrastructure: Modal Serverless GPUs}
+
+We use Modal's serverless GPU infrastructure rather than local hardware. This choice provides: (1) access to NVIDIA A100 GPUs with 40GB VRAM; (2) reproducible containerized environments; (3) on-demand scaling without infrastructure management. The tradeoff is cold-start latency, acceptable for experimentation.
+
+\subsection{Quantization Library: BitsAndBytes}
+
+We selected BitsAndBytes \cite{dettmers2022llmint8, dettmers2023qlora} over alternatives like GPTQ \cite{frantar2022gptq} or AWQ \cite{lin2023awq} for several reasons:
+
+\begin{itemize}
+    \item \textbf{No calibration data required}: BitsAndBytes applies quantization during model loading without needing a calibration dataset, simplifying deployment.
+    \item \textbf{Format flexibility}: Supports both NF4 (distribution-aware) and FP4 (uniform) 4-bit formats, enabling direct comparison.
+    \item \textbf{Double quantization}: Offers additional compression by quantizing the quantization scales themselves.
+\end{itemize}
+
+\subsection{Why Not 8-bit Quantization}
+
+We initially planned to include LLM.int8() \cite{dettmers2022llmint8} as an intermediate precision point. However, we encountered a persistent CUDA kernel error:
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+Error invalid configuration argument
+at line 380 in file /src/csrc/ops.cu
+\end{lstlisting}
+
+This error occurred across:
+\begin{itemize}
+    \item Multiple GPUs: NVIDIA A10G (24GB) and A100 (40GB)
+    \item Multiple base images: nvidia/cuda:12.1, debian-slim with PyTorch CUDA
+    \item Multiple BitsAndBytes versions: 0.43.0 through 0.49.1
+\end{itemize}
+
+This appears to be an upstream bug in BitsAndBytes' CUDA kernels. Consequently, our comparison is limited to FP16 and 4-bit formats. We note that 8-bit typically offers an intermediate compression-accuracy point, and its inclusion would strengthen the analysis.
+
+\subsection{Code Architecture}
+
+Our implementation follows a modular structure:
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+llama_quant/
+  core/config.py    # Experiment configs
+  models/           # Model loaders (FP16, BnB)
+  evaluation/       # CoQA evaluation
+  benchmark/        # Memory, latency metrics
+infra/
+  modal_app.py      # GPU orchestration
+  gpu_runner.py     # Experiment runner
+\end{lstlisting}
+
+Each module has a single responsibility: configs define experiments, loaders handle quantization, evaluation wraps lm-eval-harness, and benchmarks measure hardware metrics. This separation enables easy extension to new quantization methods.
+

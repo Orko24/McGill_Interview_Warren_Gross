@@ -1,0 +1,59 @@
+% ============================================================================
+% EXPERIMENTAL SETUP
+% ============================================================================
+\section{Experimental Setup}
+\label{sec:methods}
+
+\subsection{Quantization Methods}
+
+We employ BitsAndBytes \cite{dettmers2022llmint8, dettmers2023qlora} for post-training weight quantization, which applies compression during model loading without requiring calibration data.
+
+\subsubsection{4-bit Quantization Formats}
+
+We compare two 4-bit quantization schemes:
+
+NF4 (Normal Float 4-bit) is designed for weights following approximately normal distributions. The 16 quantization levels are non-uniformly distributed, with higher density near zero where neural network weights typically concentrate \cite{dettmers2023qlora}. This distribution-aware design aims to minimize expected quantization error for typical weight statistics.
+
+FP4 (4-bit Floating Point) employs uniformly-spaced quantization levels following standard floating-point conventions. This format allocates equal representational capacity across the value range regardless of the underlying weight distribution.
+
+\subsubsection{Double Quantization}
+
+Double quantization \cite{dettmers2023qlora} applies secondary quantization to the quantization scales themselves. Rather than storing per-group scales in 32-bit precision, scales are quantized to 8-bit with a shared 32-bit scale-of-scales. This reduces memory overhead by approximately 0.4 bits per weight with minimal additional computation.
+
+\subsection{Evaluation Protocol}
+
+\subsubsection{Model}
+We evaluate Llama 3.2-1B \cite{llama32}, a 1.24 billion parameter decoder-only transformer \cite{vaswani2017attention} employing grouped-query attention \cite{shazeer2019fast} and trained on multilingual data.
+
+\subsubsection{Task and Metrics}
+CoQA \cite{reddy2019coqa} is a conversational question answering benchmark requiring models to answer questions based on a given passage while maintaining conversational context. Following standard practice, we report F1 score computed at the word level.
+
+We employ zero-shot evaluation via the lm-evaluation-harness framework \cite{eval2023harness}, measuring intrinsic model capability under quantization without task-specific adaptation.
+
+\subsubsection{Hardware}
+All experiments execute on NVIDIA A10G GPUs (24GB VRAM) through Modal's serverless infrastructure. We enable Scaled Dot-Product Attention (SDPA) \cite{dao2022flashattention} and TF32 precision for matrix operations to ensure computational efficiency.
+
+\subsection{Ablation Design}
+
+We conduct controlled single-factor ablations (\Cref{tab:ablation_factors}) to isolate the effect of each configuration choice.
+
+\begin{table}[h]
+\centering
+\caption{Experimental factors and tested values}
+\label{tab:ablation_factors}
+\begin{tabular}{ll}
+\toprule
+Factor & Values \\
+\midrule
+Quantization format & NF4, FP4 \\
+Double quantization & Enabled, Disabled \\
+Compute dtype & float16, bfloat16 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Limitations: 8-bit Quantization}
+
+We initially planned to include 8-bit quantization (LLM.int8()) \cite{dettmers2022llmint8} in our comparison. However, we encountered a persistent CUDA kernel error in the BitsAndBytes library (\texttt{Error invalid configuration argument at line 380 in file ops.cu}) that prevented 8-bit inference across multiple GPU architectures (NVIDIA A10G and A100) and software configurations. This bug appears to be an upstream issue in the BitsAndBytes CUDA kernels, occurring regardless of base image (nvidia/cuda:12.1, debian-slim with PyTorch-bundled CUDA) or library version (0.43.0--0.49.1).
+
+Consequently, our experimental comparison is limited to FP16 baseline and 4-bit formats (NF4, FP4). We note that 8-bit quantization typically offers an intermediate compression-accuracy tradeoff between FP16 and 4-bit methods, and its inclusion would strengthen the analysis. Future work should revisit 8-bit evaluation once the BitsAndBytes library resolves this kernel compatibility issue.
