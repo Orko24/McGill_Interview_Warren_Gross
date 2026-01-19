@@ -170,6 +170,14 @@ For any non-uniform distribution (e.g., Gaussian), an optimal non-uniform quanti
   pages={249--266},
   year={2019}
 }
+
+@misc{meta2024llama32,
+  title={Llama 3.2-1B},
+  author={{Meta}},
+  year={2024},
+  howpublished={\url{https://huggingface.co/meta-llama/Llama-3.2-1B}},
+  note={Accessed: 2026-01-19}
+}
 ```
 
 ---

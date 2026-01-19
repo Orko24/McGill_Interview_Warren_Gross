@@ -480,5 +480,53 @@ non-uniform (Gaussian) weight distributions.
 
 ---
 
+## MODEL VERIFICATION SESSION
+
+**Date:** January 19, 2026  
+**Purpose:** Verify which model we actually used and its correct specifications.
+
+### Question:
+> "Which model did we use? Can you verify from the code?"
+
+### Verification:
+
+**1. Config file (`llama_quant/core/config.py` line 64):**
+```python
+model_id: str = "meta-llama/Llama-3.2-1B"
+```
+
+**2. HuggingFace Model Card confirms:**
+- Model: `meta-llama/Llama-3.2-1B`
+- Parameters: **1.23B** (shown as "1B (1.23B)" on HuggingFace)
+- Context Length: 128k
+- GQA: Yes
+- Tensor Type: BF16
+- Training Data: "A new mix of publicly available online data"
+
+**3. Verification from results (`results1.json`):**
+- FP16 model size: 2357 MB (~2.3 GB)
+- Math check: 1.23B × 2 bytes (FP16) = 2.46 GB ✓ (matches)
+
+### HuggingFace Token Flow:
+1. Secret defined in `modal_app.py` line 85:
+   ```python
+   hf_secret = modal.Secret.from_name("huggingface-secret")
+   ```
+2. Injected into GPU functions (lines 136, 153):
+   ```python
+   @app.function(secrets=[hf_secret], ...)
+   ```
+3. Modal sets `HF_TOKEN` environment variable
+4. HuggingFace `transformers` library auto-reads it for gated models
+
+### Correction Needed:
+- Report says "1.24 billion parameters"
+- **Should be "1.23 billion parameters"** per HuggingFace
+
+### Model Architecture (from HuggingFace):
+> "Llama 3.2 is an auto-regressive language model that uses an optimized transformer architecture."
+
+---
+
 ## END OF WALKTHROUGH
 
