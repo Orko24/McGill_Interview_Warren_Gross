@@ -17,9 +17,9 @@ non-uniform (Gaussian) weight distributions.
 
 This report systematically evaluates BitsAndBytes 4-bit quantization on the Llama 3.2-1B model. The study focuses on two quantization schemes available in the BitsAndBytes library:
 
-1. **NormalFloat4 (NF4)**: A data type optimized for normally distributed data, as neural network weights typically follow a zero-centered normal distribution (Dettmers et al., 2023).
+1. NormalFloat4 (NF4): A data type optimized for normally distributed data, as neural network weights typically follow a zero-centered normal distribution (Dettmers et al., 2023).
 
-2. **FP4**: Standard 4-bit floating point representation with uniform quantization levels.
+2. FP4: Standard 4-bit floating point representation with uniform quantization levels.
 
 These methods are evaluated on the CoQA (Conversational Question Answering) benchmark, which tests a model's ability to answer questions in a conversational context. CoQA requires understanding dialogue history and generating free-form answers, making it a challenging benchmark for quantized models.
 
@@ -63,24 +63,14 @@ The lm-evaluation-harness (Gao et al., 2023) was used for standardized evaluatio
 
 ### 3.4 Infrastructure
 
-Experiments were conducted on Modal serverless infrastructure:
-- GPU: NVIDIA A100-SXM4-40GB
-- CUDA: 12.x (managed by PyTorch)
-- Framework: PyTorch 2.1+, Transformers 4.36+
-- Quantization: BitsAndBytes 0.43+
-
-Model weights are cached using Modal Volumes to avoid repeated downloads across runs.
+Experiments were conducted on Modal serverless infrastructure using NVIDIA A100-SXM4-40GB GPUs with CUDA 12.x. The software stack consisted of PyTorch 2.1+, Transformers 4.36+, and BitsAndBytes 0.43+ for quantization. Model weights were cached using Modal Volumes to avoid repeated downloads across runs.
 
 ![Infrastructure Stack](../visualizations/figures/setup_2_infra.png)
 *Figure 2: Serverless GPU infrastructure stack on Modal Cloud.*
 
 ### 3.5 Hardware Benchmarks
 
-In addition to accuracy metrics, the following were measured:
-- **Model size**: GPU memory footprint in MB
-- **Prefill latency**: Time to process input tokens (128, 256, 512, 1024 lengths)
-- **Decode latency**: Time per generated token
-- **Throughput**: Tokens per second across batch sizes (1, 4, 8)
+In addition to accuracy metrics, several hardware benchmarks were collected: model size (GPU memory footprint in MB), prefill latency (time to process input tokens at sequence lengths of 128, 256, 512, and 1024), decode latency (time per generated token), and throughput (tokens per second across batch sizes 1, 4, and 8).
 
 ---
 
@@ -94,13 +84,10 @@ In addition to accuracy metrics, the following were measured:
 | BnB 4-bit NF4 | **0.6758** | **0.5285** | 965.13 | 59.1% |
 | BnB 4-bit FP4 | 0.5865 | 0.4483 | 965.13 | 59.1% |
 
-Key findings:
+Key findings: NF4 outperforms the FP16 baseline by 5.1 F1 points (0.676 vs 0.625), a counterintuitive result suggesting quantization noise acts as a regularizer. FP4 underperforms both NF4 and FP16 by a significant margin (8.9 F1 points below NF4), as uniform quantization levels are suboptimal for normally distributed weights. Both quantized models achieve identical size (965 MB), demonstrating that quantization scheme selection is purely a quality trade-off at fixed compression ratio.
 
-1. **NF4 outperforms FP16 baseline** by 5.1 F1 points (0.676 vs 0.625). This counterintuitive result suggests quantization noise acts as a regularizer.
-
-2. **FP4 underperforms both NF4 and FP16** by a significant margin (8.9 F1 points below NF4). The uniform quantization levels of FP4 are suboptimal for normally distributed weights.
-
-3. **Both quantized models achieve identical size** (965 MB), demonstrating that quantization scheme selection is purely a quality trade-off at fixed compression ratio.
+![Quantization Method Comparison](../visualizations/figures/fig2_bar_comparison.png)
+*Figure 5: CoQA F1 scores by quantization method. NF4 exceeds the FP16 baseline while FP4 falls below it.*
 
 ### 4.2 Latency Results
 
@@ -122,44 +109,33 @@ Quantized models exhibit higher latency due to dequantization overhead during in
 
 Despite lower throughput, quantized models enable running larger batch sizes on memory-constrained hardware, potentially recovering throughput through increased parallelism.
 
+![Inference Throughput](../visualizations/figures/fig4_throughput.png)
+*Figure 6: Inference throughput by batch size. FP16 achieves higher throughput but requires more memory.*
+
 ---
 
 ## 5. Analysis
 
 ### 5.1 Why Does NF4 Outperform FP16?
 
-The improvement of NF4 over FP16 is unexpected. Three contributing factors are hypothesized:
-
-**Regularization Effect**: Quantization noise acts as a form of weight perturbation during inference, similar to dropout. This may improve generalization on held-out data.
-
-**Information-Theoretic Optimality**: NF4 quantization levels are placed at normal distribution quantiles, minimizing expected reconstruction error for weights that follow this distribution. The Llama model weights empirically match this assumption.
-
-**Reduced Overfitting**: The FP16 model may be slightly overfit to its training distribution. Quantization effectively reduces model capacity, which can improve generalization.
+The improvement of NF4 over FP16 is unexpected. Three contributing factors are hypothesized: (1) Regularization effect—quantization noise acts as a form of weight perturbation during inference, similar to dropout, which may improve generalization on held-out data. (2) Information-theoretic optimality—NF4 quantization levels are placed at normal distribution quantiles, minimizing expected reconstruction error for weights that follow this distribution, and the Llama model weights empirically match this assumption. (3) Reduced overfitting—the FP16 model may be slightly overfit to its training distribution, and quantization effectively reduces model capacity, which can improve generalization.
 
 ### 5.2 Why Does FP4 Underperform?
 
 FP4 uses uniformly spaced quantization levels, which are suboptimal for normally distributed data. Most weights cluster near zero, but FP4 allocates equal representation capacity across the entire range. This wastes bits on rarely occurring large values while providing insufficient precision for the dense center of the distribution.
 
+![NF4 vs FP4 Comparison](../visualizations/figures/fig3_nf4_vs_fp4.png)
+*Figure 7: NF4 vs FP4 comparison. Both achieve identical compression (2.44×) but NF4 outperforms FP4 by 15.2% in F1 score.*
+
 ### 5.3 Memory-Accuracy Trade-off
 
-The results reveal an interesting trade-off landscape:
+The results reveal an interesting trade-off landscape, illustrated in Figure 4.
 
-```
-                    ┌─────────────────────────────────────┐
-                    │                                     │
-        0.68 ─      │              ● NF4                  │
-                    │                                     │
-        0.64 ─      │    ● FP16                           │
-   F1               │                                     │
-        0.60 ─      │              ● FP4                  │
-                    │                                     │
-        0.56 ─      │                                     │
-                    └─────────────────────────────────────┘
-                    900    1200    1500    1800    2100   2400
-                              Model Size (MB)
-```
+![Accuracy vs Memory Trade-off](../visualizations/figures/fig1_accuracy_vs_memory.png)
+*Figure 8: Accuracy vs memory trade-off. NF4 achieves the Pareto optimal point: highest accuracy (F1=0.676) at lowest memory footprint (965 MB), with 2.44× compression over FP16.*
 
-NF4 achieves the Pareto optimal point: highest accuracy at lowest memory footprint.
+![Memory Reduction](../visualizations/figures/fig5_memory_waterfall.png)
+*Figure 9: Memory reduction through 4-bit quantization. 59% reduction (1392 MB savings) from FP16 baseline.*
 
 ---
 
@@ -167,41 +143,17 @@ NF4 achieves the Pareto optimal point: highest accuracy at lowest memory footpri
 
 ### 6.1 Infrastructure: Modal Serverless GPUs
 
-Modal was chosen for experiment infrastructure for several reasons:
+Modal was chosen for experiment infrastructure because it handles container orchestration, CUDA driver installation, and GPU allocation without manual provisioning. The pay-per-use model avoids idle costs during development. The Modal image definition specifies exact package versions, ensuring reproducible environments. Modal Volumes persist model weights across runs, avoiding repeated 2GB+ downloads.
 
-1. **No GPU provisioning**: Modal handles container orchestration, CUDA driver installation, and GPU allocation.
-
-2. **Pay-per-use**: Costs are incurred only for actual GPU time, avoiding idle costs during development.
-
-3. **Reproducibility**: The Modal image definition specifies exact package versions, ensuring reproducible environments.
-
-4. **Volume caching**: Modal Volumes persist model weights across runs, avoiding repeated 2GB+ downloads.
-
-The architecture separates concerns:
-- `modal_app.py`: Local orchestration, CLI, results saving
-- `gpu_runner.py`: GPU-side code with PyTorch/Transformers imports
-
-This split keeps imports clean, as `gpu_runner.py` only runs in the Modal cloud where GPU dependencies are installed.
+The architecture separates concerns: `modal_app.py` handles local orchestration, CLI, and results saving, while `gpu_runner.py` contains GPU-side code with PyTorch/Transformers imports. This split keeps imports clean, as `gpu_runner.py` only runs in the Modal cloud where GPU dependencies are installed.
 
 ### 6.2 Evaluation: lm-evaluation-harness
 
-EleutherAI's lm-evaluation-harness was used for standardized evaluation:
-
-1. **Reproducibility**: Standardized prompting and scoring ensures comparability with published results.
-
-2. **Efficiency**: HFLM wrapper enables efficient batched inference.
-
-3. **Extensibility**: Easy to add additional benchmarks (HellaSwag, MMLU, etc.).
+EleutherAI's lm-evaluation-harness was used for standardized evaluation. Standardized prompting and scoring ensures comparability with published results. The HFLM wrapper enables efficient batched inference, and the framework is extensible to additional benchmarks (HellaSwag, MMLU, etc.).
 
 ### 6.3 Quantization: BitsAndBytes
 
-BitsAndBytes was chosen for 4-bit quantization:
-
-1. **On-the-fly quantization**: No need for pre-quantized model files; quantizes during `from_pretrained()`.
-
-2. **Transformers integration**: Native support via `quantization_config` parameter.
-
-3. **NF4 support**: Implements the theoretically optimal NF4 data type.
+BitsAndBytes was chosen for 4-bit quantization because it performs on-the-fly quantization during `from_pretrained()` without requiring pre-quantized model files. It offers native Transformers integration via the `quantization_config` parameter and implements the theoretically optimal NF4 data type.
 
 ---
 
@@ -237,15 +189,18 @@ Only Llama 3.2-1B was evaluated. Results may not generalize to larger models (7B
 
 ## 8. Related Work
 
-**Quantization Methods**: Dettmers et al. (2022) introduced LLM.int8() for 8-bit quantization with outlier handling. Dettmers et al. (2023) extended this to 4-bit with QLoRA and NF4. Frantar et al. (2023) proposed GPTQ using approximate second-order information. Lin et al. (2024) introduced AWQ with activation-aware scaling.
+Dettmers et al. (2022) introduced LLM.int8() for 8-bit quantization with outlier handling, later extending this to 4-bit with QLoRA and NF4 (Dettmers et al., 2023). Frantar et al. (2023) proposed GPTQ using approximate second-order information, and Lin et al. (2024) introduced AWQ with activation-aware scaling.
 
-**Efficient LLM Inference**: Numerous works address LLM efficiency beyond quantization, including pruning (Frantar and Alistarh, 2023), distillation (Hinton et al., 2015), and speculative decoding (Leviathan et al., 2023).
+Numerous works address LLM efficiency beyond quantization, including pruning (Frantar and Alistarh, 2023), distillation (Hinton et al., 2015), and speculative decoding (Leviathan et al., 2023).
 
-**Evaluation Benchmarks**: CoQA (Reddy et al., 2019) tests conversational QA. Other benchmarks include SQuAD (Rajpurkar et al., 2016), HellaSwag (Zellers et al., 2019), and MMLU (Hendrycks et al., 2021).
+CoQA (Reddy et al., 2019) tests conversational QA. Other benchmarks include SQuAD (Rajpurkar et al., 2016), HellaSwag (Zellers et al., 2019), and MMLU (Hendrycks et al., 2021).
 
 ---
 
 ## 9. Conclusion
+
+![Key Results Summary](../visualizations/figures/fig6_summary_metrics.png)
+*Figure 10: Summary of key results—2.44× memory compression, +8.2% F1 improvement over FP16, and +15.2% advantage over FP4.*
 
 BitsAndBytes 4-bit quantization was evaluated on Llama 3.2-1B using the CoQA benchmark. The key finding is that NF4 quantization achieves higher F1 scores (0.676) than the FP16 baseline (0.625) while reducing model size by 59%. This challenges the assumption that quantization necessarily degrades model quality.
 
