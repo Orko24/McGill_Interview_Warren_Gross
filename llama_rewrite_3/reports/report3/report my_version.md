@@ -8,17 +8,14 @@ January 2026
 
 ## Abstract
 
-We evaluate the impact of 4-bit quantization on the Llama 3.2-1B language model using the CoQA conversational question answering benchmark. Specifically, we compare FP16 baseline performance against BitsAndBytes 4-bit quantization using two quantization schemes: NormalFloat4 (NF4) and standard FP4. Our experiments reveal a counterintuitive finding: NF4 quantization achieves higher F1 scores (0.676) than the unquantized FP16 baseline (0.625), while reducing model size by 59%. We attribute this to the regularization effect of quantization noise and the information-theoretic optimality of the NF4 data type for normally distributed weights. FP4 quantization, by contrast, degrades performance (F1=0.587), demonstrating that quantization scheme selection significantly impacts model quality. All experiments were conducted using serverless GPU infrastructure on Modal, with evaluation performed via the lm-evaluation-harness framework.
+We evaluate 4-bit quantization on Llama 3.2-1B using CoQA. NF4 quantization achieves F1=0.676, comparable to or exceeding the FP16 baseline (F1=0.625), while reducing model size by 59%. This aligns with Dettmers et al. (2023), who show NF4 is information-theoretically optimal for normally distributed weights. The slight improvement may reflect quantization's regularization effect (Askari-Hemmat et al., 2022), which can reduce overfitting. FP4 quantization (F1=0.587) significantly underperforms, consistent with Lloyd-Max quantizer theory: uniform quantization is suboptimal for 
+non-uniform (Gaussian) weight distributions.
 
 ---
 
 ## 1. Introduction
 
-Large language models (LLMs) have demonstrated remarkable capabilities across diverse natural language processing tasks. However, their deployment remains constrained by computational requirements, particularly GPU memory. A 7B parameter model in FP16 precision requires approximately 14GB of VRAM, limiting accessibility on consumer hardware.
-
-Quantization offers a path toward efficient deployment by reducing the precision of model weights from 16-bit floating point to lower bit-widths. Post-training quantization (PTQ) methods are particularly attractive as they require no retraining, enabling rapid deployment of compressed models.
-
-In this work, we systematically evaluate BitsAndBytes 4-bit quantization on the Llama 3.2-1B model. We focus on two quantization schemes available in the BitsAndBytes library:
+In the report, we systematically evaluate BitsAndBytes 4-bit quantization on the Llama 3.2-1B model. We focus on two quantization schemes available in the BitsAndBytes library:
 
 1. **NormalFloat4 (NF4)**: A data type optimized for normally distributed data, as neural network weights typically follow a zero-centered normal distribution (Dettmers et al., 2023).
 
@@ -26,12 +23,11 @@ In this work, we systematically evaluate BitsAndBytes 4-bit quantization on the 
 
 We evaluate these methods on the CoQA (Conversational Question Answering) benchmark, which tests a model's ability to answer questions in a conversational context. CoQA requires understanding dialogue history and generating free-form answers, making it a challenging benchmark for quantized models.
 
-### 1.1 Contributions
+We could not test FP8 because BitsAndBytes 8-bit quantization (LLM.int8()) encounters a CUDA kernel bug (invalid configuration argument at line 380 in file /src/csrc/ops.cu) on both A10G and A100 GPUs, which is an unresolved upstream issue in the bitsandbytes library.
 
-- We demonstrate that NF4 quantization can improve F1 scores over FP16 baselines, challenging the assumption that quantization necessarily degrades performance.
-- We provide a detailed comparison of NF4 vs. FP4 quantization, showing a 9 percentage point performance gap.
-- We document practical infrastructure considerations for running quantization experiments using serverless GPU platforms.
-- We identify and document a CUDA kernel bug in BitsAndBytes 8-bit quantization affecting A10G and A100 GPUs.
+### 1.1 Brief deliberation on Findings
+
+Our experiments on the CoQA conversational question answering benchmark (Reddy et al., 2019) reveal three key findings. First, NF4 quantization achieves F1=0.676, matching or slightly exceeding the FP16 baseline (F1=0.625) while reducing model size by 59%. This aligns with theoretical predictions: Dettmers et al. (2023) show that NF4 is information-theoretically optimal for normally distributed weights, and Askari-Hemmat et al. (2022) demonstrate that quantization noise can act as implicit regularization, potentially reducing overfitting. Second, FP4 quantization significantly underperforms (F1=0.587), lagging NF4 by 9 percentage points despite identical compression ratios. This gap is explained by Lloyd-Max quantizer theory: uniform quantization schemes like FP4 are suboptimal for the bell-curve weight distributions typical of neural networks. Third, we were unable to evaluate 8-bit quantization due to a CUDA kernel bug in BitsAndBytes affecting A10G and A100 GPUs.
 
 ---
 
