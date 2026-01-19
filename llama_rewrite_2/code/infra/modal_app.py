@@ -46,7 +46,7 @@ except ImportError:
 class ModalConfig:
     """Infrastructure configuration."""
     app_name: str = "llama-quantization"
-    gpu_type: str = "A10G"
+    gpu_type: str = "A100"  # A100 for 8-bit compatibility (A10G has CUDA kernel bug)
     timeout: int = 3600
     cache_dir: str = "/cache"
     hf_cache_dir: str = "/cache/huggingface"
@@ -61,14 +61,15 @@ CONFIG = ModalConfig()
 app = modal.App(CONFIG.app_name)
 
 image = (
-    modal.Image.from_registry("nvidia/cuda:12.1.0-devel-ubuntu22.04", add_python="3.11")
+    modal.Image.debian_slim(python_version="3.11")
     .apt_install("git")
     .pip_install(
+        # PyTorch with CUDA - let PyTorch handle CUDA libs (avoids version conflicts)
         "torch>=2.1.0",
         "transformers>=4.36.0",
         "accelerate>=0.25.0",
         "datasets>=2.16.0",
-        "bitsandbytes>=0.43.0",
+        "bitsandbytes>=0.43.0",  # Works better when PyTorch handles CUDA
         "optimum>=1.15.0",
         "lm-eval>=0.4.0",
         "sentencepiece>=0.1.99",
@@ -186,7 +187,7 @@ def main(
     
     # Dispatch to appropriate runner
     if all_experiments:
-        # Note: bnb_8bit excluded due to CUDA kernel bug on A10G
+        # Note: 8-bit excluded due to bitsandbytes CUDA kernel bug (ops.cu line 380)
         experiments = [
             "fp16_baseline",
             "bnb_4bit_nf4",

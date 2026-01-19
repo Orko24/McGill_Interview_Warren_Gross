@@ -67,8 +67,11 @@ class BitsAndBytes8BitLoader(ModelLoader):
     - Outlier features kept in FP16
     - Threshold parameter controls outlier detection
     
-    Note: May have CUDA kernel issues on some GPUs (A10G).
+    Note: Some layers (lm_head, embed_tokens) are skipped to avoid CUDA kernel issues.
     """
+    
+    # Layers to skip quantization (avoid CUDA kernel errors)
+    SKIP_MODULES = ["lm_head", "embed_tokens", "rotary_emb"]
     
     @property
     def method(self) -> QuantMethod:
@@ -79,11 +82,13 @@ class BitsAndBytes8BitLoader(ModelLoader):
         
         logger.info(f"Loading {config.model.model_id} with BitsAndBytes 8-bit...")
         logger.info(f"  Threshold: {quant_config.bnb_8bit_threshold}")
+        logger.info(f"  Skip modules: {self.SKIP_MODULES}")
         
         bnb_config = BitsAndBytesConfig(
             load_in_8bit=True,
             llm_int8_threshold=quant_config.bnb_8bit_threshold,
             llm_int8_has_fp16_weight=quant_config.bnb_8bit_has_fp16_weight,
+            llm_int8_skip_modules=self.SKIP_MODULES,
         )
         
         model = AutoModelForCausalLM.from_pretrained(

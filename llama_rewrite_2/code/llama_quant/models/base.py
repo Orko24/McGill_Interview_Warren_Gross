@@ -103,7 +103,7 @@ class FP16Loader(ModelLoader):
         model = AutoModelForCausalLM.from_pretrained(
             config.model.model_id,
             revision=config.model.revision,
-            torch_dtype=get_torch_dtype(config.model.torch_dtype),
+            dtype=get_torch_dtype(config.model.torch_dtype),  # Use dtype instead of torch_dtype (deprecated)
             device_map=config.model.device_map,
             trust_remote_code=config.model.trust_remote_code,
             attn_implementation=config.model.attn_implementation or DEFAULT_ATTN_IMPLEMENTATION,

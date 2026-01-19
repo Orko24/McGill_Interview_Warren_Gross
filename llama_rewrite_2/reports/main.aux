@@ -30,7 +30,7 @@
 \citation{reddy2019coqa}
 \citation{eval2023harness}
 \citation{dao2022flashattention}
-\citation{dettmers2023qlora}
+\citation{dettmers2022llmint8}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{2}{section.2}\protected@file@percent }
 \newlabel{sec:methods}{{2}{2}{Experimental Setup}{section.2}{}}
 \newlabel{sec:methods@cref}{{[section][2][]2}{[1][2][]2}}
@@ -46,39 +46,48 @@
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:ablation_factors}{{1}{2}{Experimental factors and tested values}{table.caption.2}{}}
 \newlabel{tab:ablation_factors@cref}{{[table][1][]1}{[1][2][]2}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Results}{2}{section.3}\protected@file@percent }
-\newlabel{sec:results}{{3}{2}{Results}{section.3}{}}
-\newlabel{sec:results@cref}{{[section][3][]3}{[1][2][]2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Main Results}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Limitations: 8-bit Quantization}{2}{subsection.2.4}\protected@file@percent }
 \citation{dettmers2023qlora}
 \citation{nagel2021white}
 \citation{dettmers2023qlora}
 \citation{gholami2022survey}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Quantization results on CoQA (n=50, zero-shot)}}{3}{table.caption.3}\protected@file@percent }
-\newlabel{tab:main_results}{{2}{3}{Quantization results on CoQA (n=50, zero-shot)}{table.caption.3}{}}
-\newlabel{tab:main_results@cref}{{[table][2][]2}{[1][2][]3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Comparison of NF4 and FP4 quantization at 4-bit precision. Both configurations require identical memory; however, NF4 achieves substantially higher F1 score.}}{3}{figure.caption.4}\protected@file@percent }
-\newlabel{fig:nf4_fp4}{{1}{3}{Comparison of NF4 and FP4 quantization at 4-bit precision. Both configurations require identical memory; however, NF4 achieves substantially higher F1 score}{figure.caption.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Quantization results on CoQA (n=50, zero-shot). EM = Exact Match.}}{3}{table.caption.3}\protected@file@percent }
+\newlabel{tab:main_results}{{2}{3}{Quantization results on CoQA (n=50, zero-shot). EM = Exact Match}{table.caption.3}{}}
+\newlabel{tab:main_results@cref}{{[table][2][]2}{[1][3][]3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Results}{3}{section.3}\protected@file@percent }
+\newlabel{sec:results}{{3}{3}{Results}{section.3}{}}
+\newlabel{sec:results@cref}{{[section][3][]3}{[1][3][]3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Main Results}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Performance Benchmarks}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Comparison of NF4 and FP4 quantization at 4-bit precision. Both configurations require identical memory; however, NF4 achieves substantially higher F1 score while also exceeding the FP16 baseline.}}{3}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:nf4_fp4}{{1}{3}{Comparison of NF4 and FP4 quantization at 4-bit precision. Both configurations require identical memory; however, NF4 achieves substantially higher F1 score while also exceeding the FP16 baseline}{figure.caption.4}{}}
 \newlabel{fig:nf4_fp4@cref}{{[figure][1][]1}{[1][3][]3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Ablation Analysis}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Ablation study: F1 scores across quantization format (rows) and double quantization setting (columns).}}{3}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:heatmap}{{2}{3}{Ablation study: F1 scores across quantization format (rows) and double quantization setting (columns)}{figure.caption.5}{}}
-\newlabel{fig:heatmap@cref}{{[figure][2][]2}{[1][3][]3}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Discussion}{3}{section.4}\protected@file@percent }
-\newlabel{sec:discussion}{{4}{3}{Discussion}{section.4}{}}
-\newlabel{sec:discussion@cref}{{[section][4][]4}{[1][3][]3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Interpretation of Format Differences}{3}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Inference performance on NVIDIA A100-40GB}}{3}{table.caption.5}\protected@file@percent }
+\newlabel{tab:benchmarks}{{3}{3}{Inference performance on NVIDIA A100-40GB}{table.caption.5}{}}
+\newlabel{tab:benchmarks@cref}{{[table][3][]3}{[1][3][]3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Accuracy vs Memory Tradeoff}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Summary}{3}{subsection.3.4}\protected@file@percent }
 \citation{zhu2023survey}
 \citation{jacob2018quantization}
 \citation{frantar2022gptq}
 \citation{lin2023awq}
 \citation{xiao2023smoothquant}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Accuracy vs memory tradeoff. NF4 achieves Pareto-optimal performance with highest F1 and lowest memory usage.}}{4}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:accuracy_memory}{{2}{4}{Accuracy vs memory tradeoff. NF4 achieves Pareto-optimal performance with highest F1 and lowest memory usage}{figure.caption.6}{}}
+\newlabel{fig:accuracy_memory@cref}{{[figure][2][]2}{[1][3][]4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Summary of key experimental findings for Llama 3.2-1B quantization on CoQA.}}{4}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:summary}{{3}{4}{Summary of key experimental findings for Llama 3.2-1B quantization on CoQA}{figure.caption.7}{}}
+\newlabel{fig:summary@cref}{{[figure][3][]3}{[1][3][]4}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Discussion}{4}{section.4}\protected@file@percent }
+\newlabel{sec:discussion}{{4}{4}{Discussion}{section.4}{}}
+\newlabel{sec:discussion@cref}{{[section][4][]4}{[1][3][]4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Interpretation of Format Differences}{4}{subsection.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Practical Implications}{4}{subsection.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Limitations}{4}{subsection.4.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Future Directions}{4}{subsection.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{4}{section.5}\protected@file@percent }
-\newlabel{sec:conclusion}{{5}{4}{Conclusion}{section.5}{}}
-\newlabel{sec:conclusion@cref}{{[section][5][]5}{[1][4][]4}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{5}{section.5}\protected@file@percent }
+\newlabel{sec:conclusion}{{5}{5}{Conclusion}{section.5}{}}
+\newlabel{sec:conclusion@cref}{{[section][5][]5}{[1][4][]5}}
 \bibstyle{plain}
 \bibdata{references}
 \bibcite{dao2022flashattention}{1}
@@ -100,4 +109,4 @@
 \bibcite{vaswani2017attention}{17}
 \bibcite{xiao2023smoothquant}{18}
 \bibcite{zhu2023survey}{19}
-\gdef \@abspage@last{6}
+\gdef \@abspage@last{7}
