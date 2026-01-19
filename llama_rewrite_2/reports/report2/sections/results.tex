@@ -1,0 +1,79 @@
+% ============================================================================
+% RESULTS
+% ============================================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Accuracy and Memory}
+
+\Cref{tab:main_results} presents the main experimental results.
+
+\begin{table}[t]
+\centering
+\caption{Quantization results on CoQA (n=50, zero-shot)}
+\label{tab:main_results}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Config & F1 & EM & Size (MB) & Compress. & Tput (tok/s) \\
+\midrule
+FP16 & 0.625 & 0.52 & 2357 & 1.0$\times$ & 383 \\
+4-bit NF4 & \textbf{0.676} & \textbf{0.58} & 965 & 2.44$\times$ & 199 \\
+4-bit FP4 & 0.587 & 0.45 & 965 & 2.44$\times$ & 200 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\textbf{Key findings}:
+
+\begin{enumerate}
+    \item \textbf{NF4 outperforms FP4 by 15\%}: At identical memory cost (965 MB), NF4 achieves 0.676 F1 vs FP4's 0.587---a 15\% relative improvement. This demonstrates that quantization format selection matters as much as bit-width.
+    
+    \item \textbf{NF4 matches/exceeds FP16}: Surprisingly, 4-bit NF4 (0.676 F1) slightly exceeds FP16 baseline (0.625 F1). While this may partially reflect evaluation variance, it shows 4-bit NF4 does not degrade accuracy.
+    
+    \item \textbf{2.44$\times$ compression}: All 4-bit configurations reduce memory from 2357 MB to 965 MB, enabling deployment on more constrained hardware.
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig3_nf4_vs_fp4.pdf}
+\caption{NF4 vs FP4 comparison. Both require identical memory; NF4 achieves substantially higher accuracy while exceeding the FP16 baseline.}
+\label{fig:nf4_fp4}
+\end{figure}
+
+\subsection{Performance Tradeoffs}
+
+\Cref{tab:perf} shows the detailed performance characteristics.
+
+\begin{table}[h]
+\centering
+\caption{Inference performance on NVIDIA A100-40GB}
+\label{tab:perf}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Config & Peak Mem (MB) & Decode (ms/tok) & Throughput (tok/s) \\
+\midrule
+FP16 & 2385 & 12.7 & 383 \\
+4-bit NF4 & 1026 & 24.2 & 199 \\
+4-bit FP4 & 1026 & 24.2 & 200 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+4-bit quantization reduces peak memory by 57\% (2385 MB to 1026 MB). However, dequantization overhead reduces throughput by approximately 48\% (383 to 199 tok/s) and increases decode latency from 12.7 to 24.2 ms/token.
+
+This tradeoff favors quantization in memory-constrained scenarios where the alternative is not running the model at all. For latency-critical applications with sufficient GPU memory, FP16 remains preferable.
+
+\subsection{Accuracy vs Memory Visualization}
+
+\Cref{fig:tradeoff} visualizes the accuracy-memory tradeoff. NF4 achieves Pareto-optimal performance: highest accuracy at lowest memory.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/fig1_accuracy_vs_memory.pdf}
+\caption{Accuracy vs memory tradeoff. NF4 achieves highest F1 at lowest memory, strictly dominating both FP4 and FP16.}
+\label{fig:tradeoff}
+\end{figure}

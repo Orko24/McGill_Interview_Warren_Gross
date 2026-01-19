@@ -1,0 +1,85 @@
+\documentclass[10pt,twocolumn]{article}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{siunitx}
+
+% ============================================================================
+% CONFIGURATION
+% ============================================================================
+
+% Remove paragraph indentation, add space between paragraphs
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5\baselineskip}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=blue,
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+}
+
+% ============================================================================
+% TITLE
+% ============================================================================
+\title{Quantizing Llama 3.2-1B for Efficient Inference:\\
+A Systematic Study of Bit-Width Reduction on CoQA}
+
+\author{
+    Hemanto Bairagi\\
+    \textit{McGill University Interview Take-Home Assignment}\\
+    \texttt{January 2026}
+}
+
+\date{}
+
+% ============================================================================
+% DOCUMENT
+% ============================================================================
+\begin{document}
+
+\maketitle
+
+% Import sections from separate files
+\input{sections/abstract}
+\input{sections/introduction}
+\input{sections/design}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+% ============================================================================
+% REFERENCES
+% ============================================================================
+\clearpage
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+

@@ -1,0 +1,6 @@
+% ============================================================================
+% ABSTRACT
+% ============================================================================
+\begin{abstract}
+We minimize the bit-width of Llama 3.2-1B while maximizing accuracy on CoQA. Using BitsAndBytes post-training quantization, we compare FP16 baseline against 4-bit NF4 and FP4 formats. Our experiments show that 4-bit NF4 achieves 2.44$\times$ memory compression (2357 MB to 965 MB) while matching or exceeding FP16 accuracy. NF4 outperforms FP4 by 15\% F1 at identical memory cost due to distribution-aware quantization levels optimized for neural network weight distributions.
+\end{abstract}
