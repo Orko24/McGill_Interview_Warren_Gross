@@ -51,13 +51,15 @@ Three configurations are evaluated:
 
 All quantized configurations use a block size of 64 (BitsAndBytes default), with double quantization enabled and FP16 compute dtype for dequantized matrix multiplications.
 
+![Model Loading & Quantization Pipeline](../visualizations/figures/setup_1_model.png)
+*Figure 1: Model loading from HuggingFace Hub and quantization configurations. NF4 and FP4 achieve identical compression (0.97 GB) but differ in quantization scheme.*
+
 ### 3.3 Evaluation Protocol
 
-The lm-evaluation-harness (Gao et al., 2023) was used for standardized evaluation:
-- Task: CoQA
-- Few-shot: 0 (zero-shot)
-- Batch size: auto (dynamically determined)
-- Sample limit: 50 examples (for rapid iteration)
+The lm-evaluation-harness (Gao et al., 2023) was used for standardized evaluation with the CoQA benchmark in zero-shot mode, using automatic batch sizing and a sample limit of 50 examples for rapid iteration.
+
+![Evaluation Pipeline](../visualizations/figures/setup_3_eval.png)
+*Figure 3: Evaluation pipeline using lm-evaluation-harness with CoQA benchmark.*
 
 ### 3.4 Infrastructure
 
@@ -68,6 +70,9 @@ Experiments were conducted on Modal serverless infrastructure:
 - Quantization: BitsAndBytes 0.43+
 
 Model weights are cached using Modal Volumes to avoid repeated downloads across runs.
+
+![Infrastructure Stack](../visualizations/figures/setup_2_infra.png)
+*Figure 2: Serverless GPU infrastructure stack on Modal Cloud.*
 
 ### 3.5 Hardware Benchmarks
 
