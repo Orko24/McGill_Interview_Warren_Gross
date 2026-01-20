@@ -11,3 +11,4 @@ main.pdf: main.tex sections/*.tex references.bib
 clean:
 	rm -f *.aux *.bbl *.blg *.log *.out *.pdf
 
+
