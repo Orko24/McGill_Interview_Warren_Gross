@@ -174,6 +174,7 @@ class ComparisonRunner:
         
         results = []
         for exp_name in experiments:
+            # this is where you call the experiment runner to run the experiment
             request = ExperimentRequest(name=exp_name, limit=limit)
             result = self.runner.run(request)
             results.append(result)
